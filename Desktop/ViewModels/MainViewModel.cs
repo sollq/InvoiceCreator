@@ -1,9 +1,11 @@
 ﻿namespace Desktop.ViewModels;
 
-public class MainViewModel : BaseViewModel
+public class MainViewModel(InvoiceInputViewModels invoiceViewModel) : BaseViewModel
 {
-    public MainViewModel()
-    {
+    public InvoiceInputViewModels InvoiceCreationVM { get; } = invoiceViewModel;
 
+    public async Task InitAsyncTask()
+    {
+        await InvoiceCreationVM.InitAsync();
     }
 }
