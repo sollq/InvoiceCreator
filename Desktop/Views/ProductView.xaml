@@ -4,25 +4,66 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:viewModels="clr-namespace:Desktop.ViewModels" 
-             d:DataContext="{d:DesignInstance Type=viewModels:InvoiceInputViewModels}"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             d:DataContext="{d:DesignInstance Type=viewModels:ProductViewModel}"
              mc:Ignorable="d">
-    <Grid DataContext="{Binding }">
-        <StackPanel>
-            <DataGrid ItemsSource="{Binding Counterparties}" SelectedItem="{Binding SelectedCounterparty}"
-                      AutoGenerateColumns="False" Margin="0,0,0,10">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Наименование" Binding="{Binding Name}" />
-                    <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}" />
-                    <DataGridTextColumn Header="Цена" Binding="{Binding Price}" />
-                </DataGrid.Columns>
-            </DataGrid>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Добавить" Command="{Binding }" Margin="0,0,5,0" />
-                <Button Content="Редактировать" Command="{Binding EditCommand}"
-                        CommandParameter="{Binding SelectedEmployee}" Margin="0,0,5,0" />
-                <Button Content="Удалить" Command="{Binding DeleteCommand}"
-                        CommandParameter="{Binding SelectedEmployee}" />
-            </StackPanel>
+    
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    
+    <StackPanel>
+        <!-- DataGrid с продуктами -->
+        <DataGrid ItemsSource="{Binding Products}" 
+                  SelectedItem="{Binding SelectedProduct}"
+                  AutoGenerateColumns="False" 
+                  Margin="0,0,0,10"
+                  Style="{StaticResource MaterialDesignDataGrid}"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  IsReadOnly="True"
+                  Height="200">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Наименование" 
+                                    Binding="{Binding Name}" 
+                                    Width="*"/>
+                <DataGridTextColumn Header="Количество" 
+                                    Binding="{Binding Quantity}" 
+                                    Width="100"/>
+                <DataGridTextColumn Header="Цена" 
+                                    Binding="{Binding Price, StringFormat=C}" 
+                                    Width="100"/>
+                <DataGridTextColumn Header="Сумма" 
+                                    Binding="{Binding Total, StringFormat=C}" 
+                                    Width="100"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <!-- Кнопки управления -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Добавить" 
+                    Command="{Binding AddCommand}"
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    Margin="0,0,5,0"
+                    IsEnabled="{Binding AddCommand.CanExecute}"/>
+            <Button Content="Редактировать" 
+                    Command="{Binding EditCommand}"
+                    CommandParameter="{Binding SelectedProduct}"
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    Margin="0,0,5,0"
+                    IsEnabled="{Binding EditCommand.CanExecute}"/>
+            <Button Content="Удалить" 
+                    Command="{Binding DeleteCommand}"
+                    CommandParameter="{Binding SelectedProduct}"
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    IsEnabled="{Binding DeleteCommand.CanExecute}"/>
         </StackPanel>
-    </Grid>
+        
+        <!-- Индикатор загрузки -->
+        <ProgressBar IsIndeterminate="True" 
+                     Height="2" 
+                     Margin="0,10,0,0"
+                     Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+    </StackPanel>
 </UserControl>

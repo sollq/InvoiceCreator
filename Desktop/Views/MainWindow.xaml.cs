@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Desktop.ViewModels;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +20,14 @@ namespace Desktop
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += async (s, e) =>
+            {
+                if (DataContext is not MainViewModel vm) 
+                    return;
+
+                await vm.InitAsync();
+                DataContext = vm;
+            };
         }
     }
 }

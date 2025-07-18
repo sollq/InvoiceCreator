@@ -2,7 +2,9 @@
 
 public class Product
 {
-    public string Name;
-    public int Quantity;
-    public decimal Price;
+    public required string Name { get; set; }
+    public int Quantity { get; set; }
+    public decimal Price { get; set; }
+    
+    public decimal Total => Quantity * Price;
 }

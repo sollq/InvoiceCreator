@@ -5,11 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:Desktop.ViewModels"
         xmlns:views="clr-namespace:Desktop.Views"
-        d:DataContext="{d:DesignInstance Type=viewModels:InvoiceInputViewModels}"
-        Title="MainWindow" Height="450" Width="800"
+        d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}"
+        Title="Генератор счетов" Height="600" Width="1000"
         mc:Ignorable="d">
-    <Grid
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <Grid>
         <TabControl>
             <TabItem Header="Генерация счетов">
                 <views:InvoiceInput />

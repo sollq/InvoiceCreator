@@ -3,36 +3,87 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:viewModels="clr-namespace:Desktop.ViewModels" 
+             mc:Ignorable="d"
              xmlns:views="clr-namespace:Desktop.Views"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             d:DataContext="{d:DesignInstance Type=viewModels:InvoiceInputViewModels}"
-             mc:Ignorable="d">
-    <Grid DataContext="{Binding }">
-        <StackPanel>
-            <!--Загружаем таблицу продуктов-->
-            <views:ProductView Margin="0, 5, 0, 5"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+             xmlns:viewModels="clr-namespace:Desktop.ViewModels" 
+             d:DataContext="{d:DesignInstance Type=viewModels:InvoiceInputViewModels}">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Grid DataContext="{Binding InvoiceCreationVM}">
+        <StackPanel Margin="20">
+            <!-- Заголовок -->
+            <TextBlock Text="Создание счета" 
+                       Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                       HorizontalAlignment="Center" 
+                       Margin="0,0,0,20"/>
+            
+            <!-- Основные поля -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
                 <TextBox
                     materialDesign:HintAssist.Hint="ИНН/БИН"
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                    Margin="0,5,0,5"/>
+                    Margin="0,5,10,5"
+                    Width="200"
+                    Text="{Binding CompanyINN, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                />
+                <Button Content="Загрузить данные" 
+                        Command="{Binding LoadCompanyDataCommand}"
+                        Style="{StaticResource MaterialDesignOutlinedButton}"
+                        Margin="0,5,10,5"
+                        IsEnabled="{Binding LoadCompanyDataCommand.CanExecute}"/>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
                 <TextBox
                     materialDesign:HintAssist.Hint="Номер договора"
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                    Margin="10,5,0,5"
+                    Margin="0,5,10,5"
+                    Width="200"
                     Text="{Binding ContractNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                    />
+                />
                 <DatePicker
                     materialDesign:HintAssist.Hint="Дата договора"
                     Style="{StaticResource MaterialDesignDatePicker}"
-                    Margin="10,5,0,5"
+                    Margin="0,5,10,5"
+                    Width="200"
                     SelectedDate="{Binding ContractDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                    />
+                />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Content="Создать счет" Command="{Binding }" 
-                        Margin="0,0,5,0"/>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                <TextBox
+                    materialDesign:HintAssist.Hint="Наименование компании"
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                    Margin="0,5,10,5"
+                    Width="400"
+                    Text="{Binding CompanyName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                />
+            </StackPanel>
+            
+            <!-- Продукты -->
+            <TextBlock Text="Товары/услуги" 
+                       Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                       Margin="0,0,0,10"/>
+            
+            <views:ProductView DataContext="{Binding ProductVM}" />
+            
+            <!-- Кнопки действий -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                <Button Content="Создать счет" 
+                        Command="{Binding CreateInvoiceCommand}"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Margin="0,0,10,0"
+                        IsEnabled="{Binding CreateInvoiceCommand.CanExecute}"/>
+                
+                <ProgressBar IsIndeterminate="True" 
+                             Width="20" 
+                             Height="20" 
+                             Margin="10,0,0,0"
+                             Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </StackPanel>
         </StackPanel>
     </Grid>
