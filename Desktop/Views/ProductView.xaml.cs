@@ -2,9 +2,9 @@
 
 namespace Desktop.Views
 {
-    public partial class InvoiceInput : UserControl
+    public partial class ProductView : UserControl
     {
-        public InvoiceInput()
+        public ProductView()
         {
             InitializeComponent();
         }
