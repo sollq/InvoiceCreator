@@ -32,7 +32,7 @@ public partial class App : Application
         // Регистрация сервисов
         ServiceRegistration.ConfigureServices(services, config);
 
-        // Регистрация ViewModels
+        // Регистрация ViewModels (важен порядок!)
         services.AddTransient<ProductViewModel>();
         services.AddTransient<InvoiceInputViewModels>();
         services.AddTransient<MainViewModel>();
@@ -59,7 +59,7 @@ public partial class App : Application
             }
         });
 
-        //mainWindow.Show();
+        mainWindow.Show();
     }
 
     protected override void OnExit(ExitEventArgs e)
