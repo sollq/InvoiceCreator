@@ -1,6 +1,6 @@
 ﻿using Core.Models;
 
-namespace Infrastructure.Pdf.Interfaces;
+namespace Core.Interfaces;
 
 public interface IInvoicePdfGenerator
 {

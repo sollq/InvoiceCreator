@@ -104,8 +104,11 @@ public class ProductViewModel : BaseViewModel
             // TODO: Открыть диалог добавления продукта
             var newProduct = new Product
             {
+                Id = Products.Count + 1,
                 Name = "Новый продукт",
                 Quantity = 1,
+                Code = "123",
+                Unit = "одна",
                 Price = 0
             };
             

@@ -24,11 +24,20 @@
                   IsReadOnly="True"
                   Height="200">
             <DataGrid.Columns>
+                <DataGridTextColumn Header="№" 
+                                    Binding="{Binding Id}" 
+                                    Width="100" />
+                <DataGridTextColumn Header="Код" 
+                                    Binding="{Binding Code}" 
+                                    Width="100" />
                 <DataGridTextColumn Header="Наименование" 
                                     Binding="{Binding Name}" 
                                     Width="*" />
-                <DataGridTextColumn Header="Количество" 
+                <DataGridTextColumn Header="Кол-во" 
                                     Binding="{Binding Quantity}" 
+                                    Width="100" />
+                <DataGridTextColumn Header="Ед." 
+                                    Binding="{Binding Unit}" 
                                     Width="100" />
                 <DataGridTextColumn Header="Цена" 
                                     Binding="{Binding Price, StringFormat=C}" 

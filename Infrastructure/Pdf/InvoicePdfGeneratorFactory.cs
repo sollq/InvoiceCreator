@@ -1,7 +1,8 @@
-﻿using Core.Models;
+﻿using Core.Interfaces;
+using Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Infrastructure.Pdf.Interfaces;
+namespace Infrastructure.Pdf;
 
 public class InvoicePdfGeneratorFactory(IServiceProvider provider) : IInvoicePdfGeneratorFactory
 {

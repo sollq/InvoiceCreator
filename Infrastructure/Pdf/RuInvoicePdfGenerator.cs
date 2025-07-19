@@ -1,5 +1,5 @@
-﻿using Core.Models;
-using Infrastructure.Pdf.Interfaces;
+﻿using Core.Interfaces;
+using Core.Models;
 
 namespace Infrastructure.Pdf;
 

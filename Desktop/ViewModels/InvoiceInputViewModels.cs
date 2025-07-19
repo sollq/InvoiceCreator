@@ -3,6 +3,7 @@ using Core.Models;
 using Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Desktop.ViewModels;
 
@@ -10,6 +11,8 @@ public class InvoiceInputViewModels : BaseViewModel
 {
     private readonly ILogger<InvoiceInputViewModels> _logger;
     private readonly IInvoiceNumberCounterService _counterService;
+    private readonly IInvoicePdfGeneratorFactory _factory;
+    private readonly MyCompanyInfoProvider _myCompanyInfoProvider;
 
     public Array OrganizationTypes { get; } = Enum.GetValues(typeof(OrganizationType));
 
@@ -39,11 +42,15 @@ public class InvoiceInputViewModels : BaseViewModel
     public InvoiceInputViewModels(
         ILogger<InvoiceInputViewModels> logger,
         ProductViewModel productViewModel,
-        IInvoiceNumberCounterService counterService)
+        IInvoiceNumberCounterService counterService, 
+        IInvoicePdfGeneratorFactory factory,
+        MyCompanyInfoProvider myCompanyInfoProvider)
     {
+        _factory = factory;
         _logger = logger;
-        ProductVM = productViewModel;
         _counterService = counterService;
+        _myCompanyInfoProvider = myCompanyInfoProvider;
+        ProductVM = productViewModel;
         CreateInvoiceCommand = new AsyncRelayCommand(async _ => await CreateInvoice(), _ => CanCreateInvoice());
         LoadCompanyDataCommand = new AsyncRelayCommand(async _ => await LoadCompanyData(), _ => CanLoadCompanyData());
         UpdateNextInvoiceNumber();
@@ -123,19 +130,41 @@ public class InvoiceInputViewModels : BaseViewModel
         try
         {
             IsBusy = true;
-            // Если номер не меняли вручную — подставляем следующий
+
             if (string.IsNullOrWhiteSpace(ContractNumber) || ContractNumber.StartsWith("СЧЕТ-"))
-            {
                 ContractNumber = _counterService.GetNextNumber(SelectedOrgType);
-            }
             else
-            {
-                // Пользователь вписал свой номер — всё равно инкрементируем счетчик для консистентности
                 _ = _counterService.GetNextNumber(SelectedOrgType);
-            }
-            _logger.LogInformation($"Создание счета для компании {CompanyINN}, номер: {ContractNumber}");
-            await Task.Delay(1000); // Имитация работы
-            _logger.LogInformation("Счет успешно создан");
+
+            var seller = _myCompanyInfoProvider.GetInfo(SelectedOrgType);
+
+            var invoiceData = new InvoiceData
+            {
+                InvoiceNumber = ContractNumber,
+                Date = ContractDate,
+                Seller = seller,
+                Buyer = new ClientInfo
+                {
+                    INN = CompanyINN ?? "",
+                    Name = CompanyName ?? "",
+                    Address = CompanyAddress ?? ""
+                },
+                ContractNumber = ContractNumber,
+                Products = ProductVM.Products.ToList(),
+                TotalAmount = ProductVM.Products.Sum(p => p.Total),
+                TotalAmountText = NumberToWordsConverter.Convert(ProductVM.Products.Sum(p => p.Total)) + " тенге",
+                OrgType = SelectedOrgType
+            };
+
+            var generator = _factory.GetGenerator(SelectedOrgType);
+            var pdfBytes = generator.Generate(invoiceData);
+
+            var savePath = GetSavePathForInvoice(ContractNumber);
+            if (!string.IsNullOrWhiteSpace(savePath))
+                await File.WriteAllBytesAsync(savePath, pdfBytes);
+
+            _logger.LogInformation("Счет успешно создан и сохранен: {Path}", savePath);
+
             UpdateNextInvoiceNumber();
         }
         catch (Exception ex)

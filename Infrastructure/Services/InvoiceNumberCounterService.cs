@@ -42,7 +42,7 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
     public string PeekNextNumber(OrganizationType org)
     {
         var data = Load();
-        int next = org switch
+        var next = org switch
         {
             OrganizationType.Ru => data.Ru + 1,
             OrganizationType.Kz => data.Kz + 1,
