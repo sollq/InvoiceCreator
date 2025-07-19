@@ -1,16 +1,24 @@
 ﻿using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using Core.Models;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Desktop.ViewModels;
 
 public class ProductViewModel : BaseViewModel
 {
     private readonly ILogger<ProductViewModel> _logger;
-    private bool _isBusy;
+    
+    public ObservableCollection<Product> Products { get; set; } = [];
 
     private Product? _selectedProduct;
+    private bool _isBusy;
+
+    public AsyncRelayCommand AddCommand { get; }
+    public AsyncRelayCommand EditCommand { get; }
+    public AsyncRelayCommand DeleteCommand { get; }
 
     public ProductViewModel(ILogger<ProductViewModel> logger)
     {
@@ -20,23 +28,10 @@ public class ProductViewModel : BaseViewModel
         DeleteCommand = new AsyncRelayCommand(async c => await Delete(c as Product), _ => CanDelete());
     }
 
-    public ObservableCollection<Product> Products { get; set; } = [];
-
-    public AsyncRelayCommand AddCommand { get; }
-    public AsyncRelayCommand EditCommand { get; }
-    public AsyncRelayCommand DeleteCommand { get; }
-
     public Product? SelectedProduct
     {
         get => _selectedProduct;
-        set
-        {
-            if (SetProperty(ref _selectedProduct, value))
-            {
-                EditCommand.RaiseCanExecuteChanged();
-                DeleteCommand.RaiseCanExecuteChanged();
-            }
-        }
+        set => SetProperty(ref _selectedProduct, value);
     }
 
     public bool IsBusy
@@ -66,7 +61,7 @@ public class ProductViewModel : BaseViewModel
         {
             IsBusy = true;
             _logger.LogInformation("Инициализация ProductViewModel");
-
+            
             // TODO: Загрузка существующих продуктов
             await Task.CompletedTask;
         }
@@ -87,7 +82,7 @@ public class ProductViewModel : BaseViewModel
         {
             IsBusy = true;
             _logger.LogInformation("Добавление нового продукта");
-
+            
             // TODO: Открыть диалог добавления продукта
             var newProduct = new Product
             {
@@ -95,10 +90,10 @@ public class ProductViewModel : BaseViewModel
                 Quantity = 1,
                 Price = 0
             };
-
+            
             Products.Add(newProduct);
             SelectedProduct = newProduct;
-
+            
             _logger.LogInformation("Продукт добавлен: {ProductName}", newProduct.Name);
         }
         catch (Exception ex)
@@ -114,17 +109,17 @@ public class ProductViewModel : BaseViewModel
 
     private async Task Edit(Product? product)
     {
-        if (product == null)
+        if (product == null) 
             return;
 
         try
         {
             IsBusy = true;
             _logger.LogInformation("Редактирование продукта: {ProductName}", product.Name);
-
+            
             // TODO: Открыть диалог редактирования продукта
             await Task.Delay(100); // Имитация работы
-
+            
             _logger.LogInformation("Продукт отредактирован: {ProductName}", product.Name);
         }
         catch (Exception ex)
@@ -147,13 +142,13 @@ public class ProductViewModel : BaseViewModel
         {
             IsBusy = true;
             _logger.LogInformation("Удаление продукта: {ProductName}", product.Name);
-
+            
             // TODO: Подтверждение удаления
             Products.Remove(product);
-
+            
             if (SelectedProduct == product)
                 SelectedProduct = null;
-
+            
             _logger.LogInformation("Продукт удален: {ProductName}", product.Name);
         }
         catch (Exception ex)

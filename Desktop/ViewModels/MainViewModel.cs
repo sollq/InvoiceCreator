@@ -1,18 +1,26 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace Desktop.ViewModels;
 
-public class MainViewModel(
-    InvoiceInputViewModels invoiceViewModel,
-    ProductViewModel productViewModel,
-    ILogger<MainViewModel> logger)
-    : BaseViewModel
+public class MainViewModel : BaseViewModel
 {
+    private readonly ILogger<MainViewModel> _logger;
     private bool _isBusy;
 
-    public InvoiceInputViewModels InvoiceCreationVM { get; } = invoiceViewModel;
-    public ProductViewModel ProductVM { get; } = productViewModel;
+    public InvoiceInputViewModels InvoiceCreationVM { get; }
+    public ProductViewModel ProductVM { get; }
+
+    public MainViewModel(
+        InvoiceInputViewModels invoiceViewModel, 
+        ProductViewModel productViewModel,
+        ILogger<MainViewModel> logger)
+    {
+        _logger = logger;
+        InvoiceCreationVM = invoiceViewModel;
+        ProductVM = productViewModel;
+    }
 
     public bool IsBusy
     {
@@ -25,16 +33,16 @@ public class MainViewModel(
         try
         {
             IsBusy = true;
-            logger.LogInformation("Инициализация MainViewModel");
-
+            _logger.LogInformation("Инициализация MainViewModel");
+            
             await InvoiceCreationVM.InitAsync();
             await ProductVM.InitAsync();
-
-            logger.LogInformation("MainViewModel успешно инициализирован");
+            
+            _logger.LogInformation("MainViewModel успешно инициализирован");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ошибка при инициализации MainViewModel");
+            _logger.LogError(ex, "Ошибка при инициализации MainViewModel");
             throw;
         }
         finally

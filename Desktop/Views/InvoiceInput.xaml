@@ -32,8 +32,7 @@
                 <Button Content="Загрузить данные"
                         Command="{Binding LoadCompanyDataCommand}"
                         Style="{StaticResource MaterialDesignOutlinedButton}"
-                        Margin="0,5,10,5"
-                        IsEnabled="{Binding LoadCompanyDataCommand.CanExecute}" />
+                        Margin="0,5,10,5" />
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
@@ -72,8 +71,7 @@
                 <Button Content="Создать счет"
                         Command="{Binding CreateInvoiceCommand}"
                         Style="{StaticResource MaterialDesignRaisedButton}"
-                        Margin="0,0,10,0"
-                        IsEnabled="{Binding CreateInvoiceCommand.CanExecute}" />
+                        Margin="0,0,10,0" />
 
                 <ProgressBar IsIndeterminate="True"
                              Width="20"
