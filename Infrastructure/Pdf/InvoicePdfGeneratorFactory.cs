@@ -1,5 +1,6 @@
 ﻿using Core.Interfaces;
 using Core.Models;
+using Infrastructure.Pdf.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Pdf;

@@ -3,16 +3,14 @@ using Core.Models;
 using Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.IO;
+using System.Threading.Tasks;
 
 namespace Desktop.ViewModels;
 
 public class InvoiceInputViewModels : BaseViewModel
 {
     private readonly ILogger<InvoiceInputViewModels> _logger;
-    private readonly IInvoiceNumberCounterService _counterService;
-    private readonly IInvoicePdfGeneratorFactory _factory;
-    private readonly MyCompanyInfoProvider _myCompanyInfoProvider;
+    private readonly IInvoiceOrchestrator _orchestrator;
 
     public Array OrganizationTypes { get; } = Enum.GetValues(typeof(OrganizationType));
 
@@ -24,13 +22,14 @@ public class InvoiceInputViewModels : BaseViewModel
         {
             if (SetProperty(ref _selectedOrgType, value))
             {
-                UpdateNextInvoiceNumber();
+                // Можно обновлять номер счета, если нужно
             }
         }
     }
 
     private string? _companyINN;
     private string? _companyName;
+    private string? _companyAddress;
     private string? _contractNumber;
     private DateTime _contractDate = DateTime.Today;
     private bool _isBusy;
@@ -42,18 +41,13 @@ public class InvoiceInputViewModels : BaseViewModel
     public InvoiceInputViewModels(
         ILogger<InvoiceInputViewModels> logger,
         ProductViewModel productViewModel,
-        IInvoiceNumberCounterService counterService, 
-        IInvoicePdfGeneratorFactory factory,
-        MyCompanyInfoProvider myCompanyInfoProvider)
+        IInvoiceOrchestrator orchestrator)
     {
-        _factory = factory;
         _logger = logger;
-        _counterService = counterService;
-        _myCompanyInfoProvider = myCompanyInfoProvider;
+        _orchestrator = orchestrator;
         ProductVM = productViewModel;
         CreateInvoiceCommand = new AsyncRelayCommand(async _ => await CreateInvoice(), _ => CanCreateInvoice());
         LoadCompanyDataCommand = new AsyncRelayCommand(async _ => await LoadCompanyData(), _ => CanLoadCompanyData());
-        UpdateNextInvoiceNumber();
     }
 
     public string? CompanyINN 
@@ -72,6 +66,12 @@ public class InvoiceInputViewModels : BaseViewModel
     { 
         get => _companyName;
         set => SetProperty(ref _companyName, value);
+    }
+
+    public string? CompanyAddress
+    {
+        get => _companyAddress;
+        set => SetProperty(ref _companyAddress, value);
     }
 
     public string? ContractNumber 
@@ -96,11 +96,6 @@ public class InvoiceInputViewModels : BaseViewModel
     {
         get => _isBusy;
         set => SetProperty(ref _isBusy, value);
-    }
-
-    private void UpdateNextInvoiceNumber()
-    {
-        ContractNumber = _counterService.PeekNextNumber(SelectedOrgType);
     }
 
     private void UpdateCommands()
@@ -130,42 +125,19 @@ public class InvoiceInputViewModels : BaseViewModel
         try
         {
             IsBusy = true;
-
-            if (string.IsNullOrWhiteSpace(ContractNumber) || ContractNumber.StartsWith("СЧЕТ-"))
-                ContractNumber = _counterService.GetNextNumber(SelectedOrgType);
-            else
-                _ = _counterService.GetNextNumber(SelectedOrgType);
-
-            var seller = _myCompanyInfoProvider.GetInfo(SelectedOrgType);
-
-            var invoiceData = new InvoiceData
+            var input = new InvoiceInput
             {
-                InvoiceNumber = ContractNumber,
-                Date = ContractDate,
-                Seller = seller,
-                Buyer = new ClientInfo
-                {
-                    INN = CompanyINN ?? "",
-                    Name = CompanyName ?? "",
-                    Address = CompanyAddress ?? ""
-                },
-                ContractNumber = ContractNumber,
-                Products = ProductVM.Products.ToList(),
-                TotalAmount = ProductVM.Products.Sum(p => p.Total),
-                TotalAmountText = NumberToWordsConverter.Convert(ProductVM.Products.Sum(p => p.Total)) + " тенге",
-                OrgType = SelectedOrgType
+                OrgType = SelectedOrgType,
+                CompanyINN = CompanyINN ?? string.Empty,
+                CompanyName = CompanyName ?? string.Empty,
+                CompanyAddress = CompanyAddress ?? string.Empty,
+                ContractNumber = ContractNumber ?? string.Empty,
+                ContractDate = ContractDate,
+                Products = ProductVM.Products.ToList()
             };
-
-            var generator = _factory.GetGenerator(SelectedOrgType);
-            var pdfBytes = generator.Generate(invoiceData);
-
-            var savePath = GetSavePathForInvoice(ContractNumber);
-            if (!string.IsNullOrWhiteSpace(savePath))
-                await File.WriteAllBytesAsync(savePath, pdfBytes);
-
-            _logger.LogInformation("Счет успешно создан и сохранен: {Path}", savePath);
-
-            UpdateNextInvoiceNumber();
+            var path = await _orchestrator.CreateInvoiceAsync(input);
+            _logger.LogInformation("Счет успешно создан и сохранен: {Path}", path);
+            // Можно показать Snackbar/MessageBox
         }
         catch (Exception ex)
         {
@@ -202,19 +174,6 @@ public class InvoiceInputViewModels : BaseViewModel
     }
 
     public async Task InitAsync()
-    {
-        try
-        {
-            await LoadLastNumber();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Ошибка при инициализации");
-            throw;
-        }
-    }
-
-    private async Task LoadLastNumber()
     {
         await Task.CompletedTask;
     }

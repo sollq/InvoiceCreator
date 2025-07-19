@@ -5,6 +5,7 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using Core.Models;
 using Core.Interfaces;
+using Infrastructure.Pdf.Interfaces;
 
 namespace Infrastructure.Pdf;
 
