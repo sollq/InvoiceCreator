@@ -1,17 +1,16 @@
-﻿namespace Core.Models
+﻿namespace Core.Models;
+
+public class InvoiceData
 {
-    public class InvoiceData
-    {
-        public OrganizationType OrgType;
-        public string InvoiceNumber;
-        public string ContractNumber;
-        public DateTime Date;
-        public string ClientINN;
-        public List<Product> Products;
-        public string Subject;
-        public decimal TotalAmount;
-        public string TotalAmountText;
-        public ClientInfo Buyer;
-        public SupplierInfo Seller;
-    }
+    public ClientInfo Buyer;
+    public string ClientINN;
+    public string ContractNumber;
+    public DateTime Date;
+    public string InvoiceNumber;
+    public OrganizationType OrgType;
+    public List<Product> Products;
+    public SupplierInfo Seller;
+    public string Subject;
+    public decimal TotalAmount;
+    public string TotalAmountText;
 }

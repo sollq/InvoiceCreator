@@ -1,71 +1,70 @@
-﻿using Desktop.ViewModels;
-using System.Windows;
+﻿using System.Windows;
+using Desktop.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Desktop
+namespace Desktop;
+
+/// <summary>
+///     Interaction logic for App.xaml
+/// </summary>
+public partial class App : Application
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
+    private ServiceProvider? _serviceProvider;
+
+    protected override void OnStartup(StartupEventArgs e)
     {
-        private ServiceProvider? _serviceProvider;
+        var config = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", true)
+            .Build();
 
-        protected override void OnStartup(StartupEventArgs e)
+        var services = new ServiceCollection();
+
+        // Настройка логирования
+        services.AddLogging(builder =>
         {
-            var config = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile("appsettings.json", optional: true)
-                .Build();
+            builder.AddConsole();
+            builder.AddDebug();
+        });
 
-            var services = new ServiceCollection();
-            
-            // Настройка логирования
-            services.AddLogging(builder =>
-            {
-                builder.AddConsole();
-                builder.AddDebug();
-            });
+        // Регистрация сервисов
+        ServiceRegistration.ConfigureServices(services, config);
 
-            // Регистрация сервисов
-            ServiceRegistration.ConfigureServices(services, config);
-            
-            // Регистрация ViewModels
-            services.AddTransient<ProductViewModel>();
-            services.AddTransient<InvoiceInputViewModels>();
-            services.AddTransient<MainViewModel>();
-            services.AddTransient<MainWindow>();
+        // Регистрация ViewModels
+        services.AddTransient<ProductViewModel>();
+        services.AddTransient<InvoiceInputViewModels>();
+        services.AddTransient<MainViewModel>();
+        services.AddTransient<MainWindow>();
 
-            _serviceProvider = services.BuildServiceProvider();
+        _serviceProvider = services.BuildServiceProvider();
 
-            // Создание и настройка главного окна
-            var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-            var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
-            mainWindow.DataContext = mainViewModel;
-            
-            // Инициализация ViewModel
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await mainViewModel.InitAsync();
-                }
-                catch (Exception ex)
-                {
-                    var logger = _serviceProvider.GetRequiredService<ILogger<App>>();
-                    logger.LogError(ex, "Ошибка при инициализации приложения");
-                }
-            });
-            
-            //mainWindow.Show();
-        }
+        // Создание и настройка главного окна
+        var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+        var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+        mainWindow.DataContext = mainViewModel;
 
-        protected override void OnExit(ExitEventArgs e)
+        // Инициализация ViewModel
+        _ = Task.Run(async () =>
         {
-            _serviceProvider?.Dispose();
-            base.OnExit(e);
-        }
+            try
+            {
+                await mainViewModel.InitAsync();
+            }
+            catch (Exception ex)
+            {
+                var logger = _serviceProvider.GetRequiredService<ILogger<App>>();
+                logger.LogError(ex, "Ошибка при инициализации приложения");
+            }
+        });
+
+        //mainWindow.Show();
+    }
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+        _serviceProvider?.Dispose();
+        base.OnExit(e);
     }
 }

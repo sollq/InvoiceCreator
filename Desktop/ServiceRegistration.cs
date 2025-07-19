@@ -7,6 +7,5 @@ public class ServiceRegistration
 {
     public static void ConfigureServices(ServiceCollection services, IConfigurationRoot config)
     {
-
     }
 }

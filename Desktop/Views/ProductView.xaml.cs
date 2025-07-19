@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Desktop.Views
+namespace Desktop.Views;
+
+public partial class ProductView : UserControl
 {
-    public partial class ProductView : UserControl
+    public ProductView()
     {
-        public ProductView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Desktop.Views
+namespace Desktop.Views;
+
+public partial class InvoiceInput : UserControl
 {
-    public partial class InvoiceInput : UserControl
+    public InvoiceInput()
     {
-        public InvoiceInput()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }
