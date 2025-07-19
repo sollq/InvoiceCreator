@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Core.Interfaces;
 using Desktop.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,17 +23,20 @@ public partial class App : Application
 
         var services = new ServiceCollection();
 
-        // Настройка логирования
+        // Логирование
         services.AddLogging(builder =>
         {
             builder.AddConsole();
             builder.AddDebug();
         });
 
-        // Регистрация сервисов
-        ServiceRegistration.ConfigureServices(services, config);
+        services.AddSingleton<IServiceRegistration, Infrastructure.ServiceRegistration>();
 
-        // Регистрация ViewModels (важен порядок!)
+        // Вызов регистрации инфраструктурных сервисов
+        var serviceRegistration = services.BuildServiceProvider().GetRequiredService<IServiceRegistration>();
+        serviceRegistration.ConfigureServices(services);
+
+        // Регистрация ViewModels
         services.AddTransient<ProductViewModel>();
         services.AddTransient<InvoiceInputViewModels>();
         services.AddTransient<MainViewModel>();

@@ -2,6 +2,6 @@
 
 public enum OrganizationType
 {
-    EC,
-    NS
+    Ru,
+    Kz
 }

@@ -1,8 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
+﻿using System.Runtime.CompilerServices;
 using Core.Models;
+using Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
@@ -11,7 +9,23 @@ namespace Desktop.ViewModels;
 public class InvoiceInputViewModels : BaseViewModel
 {
     private readonly ILogger<InvoiceInputViewModels> _logger;
-    
+    private readonly IInvoiceNumberCounterService _counterService;
+
+    public Array OrganizationTypes { get; } = Enum.GetValues(typeof(OrganizationType));
+
+    private OrganizationType _selectedOrgType = OrganizationType.Ru;
+    public OrganizationType SelectedOrgType
+    {
+        get => _selectedOrgType;
+        set
+        {
+            if (SetProperty(ref _selectedOrgType, value))
+            {
+                UpdateNextInvoiceNumber();
+            }
+        }
+    }
+
     private string? _companyINN;
     private string? _companyName;
     private string? _contractNumber;
@@ -22,12 +36,17 @@ public class InvoiceInputViewModels : BaseViewModel
     public AsyncRelayCommand LoadCompanyDataCommand { get; }
     public ProductViewModel ProductVM { get; }
 
-    public InvoiceInputViewModels(ILogger<InvoiceInputViewModels> logger, ProductViewModel productViewModel)
+    public InvoiceInputViewModels(
+        ILogger<InvoiceInputViewModels> logger,
+        ProductViewModel productViewModel,
+        IInvoiceNumberCounterService counterService)
     {
         _logger = logger;
         ProductVM = productViewModel;
+        _counterService = counterService;
         CreateInvoiceCommand = new AsyncRelayCommand(async _ => await CreateInvoice(), _ => CanCreateInvoice());
         LoadCompanyDataCommand = new AsyncRelayCommand(async _ => await LoadCompanyData(), _ => CanLoadCompanyData());
+        UpdateNextInvoiceNumber();
     }
 
     public string? CompanyINN 
@@ -37,7 +56,7 @@ public class InvoiceInputViewModels : BaseViewModel
         {
             if (SetProperty(ref _companyINN, value))
             {
-                UpdateCommands();
+                LoadCompanyDataCommand.RaiseCanExecuteChanged();
             }
         }
     }
@@ -51,13 +70,7 @@ public class InvoiceInputViewModels : BaseViewModel
     public string? ContractNumber 
     { 
         get => _contractNumber;
-        set
-        {
-            if (SetProperty(ref _contractNumber, value))
-            {
-                UpdateCommands();
-            }
-        }
+        set => SetProperty(ref _contractNumber, value);
     }
 
     public DateTime ContractDate 
@@ -78,9 +91,13 @@ public class InvoiceInputViewModels : BaseViewModel
         set => SetProperty(ref _isBusy, value);
     }
 
+    private void UpdateNextInvoiceNumber()
+    {
+        ContractNumber = _counterService.PeekNextNumber(SelectedOrgType);
+    }
+
     private void UpdateCommands()
     {
-        // Обновляем команды только если не заняты
         if (!IsBusy)
         {
             CreateInvoiceCommand.RaiseCanExecuteChanged();
@@ -106,12 +123,20 @@ public class InvoiceInputViewModels : BaseViewModel
         try
         {
             IsBusy = true;
-            _logger.LogInformation("Создание счета для компании {CompanyINN}", CompanyINN);
-            
-            // TODO: Реализовать создание счета
+            // Если номер не меняли вручную — подставляем следующий
+            if (string.IsNullOrWhiteSpace(ContractNumber) || ContractNumber.StartsWith("СЧЕТ-"))
+            {
+                ContractNumber = _counterService.GetNextNumber(SelectedOrgType);
+            }
+            else
+            {
+                // Пользователь вписал свой номер — всё равно инкрементируем счетчик для консистентности
+                _ = _counterService.GetNextNumber(SelectedOrgType);
+            }
+            _logger.LogInformation($"Создание счета для компании {CompanyINN}, номер: {ContractNumber}");
             await Task.Delay(1000); // Имитация работы
-            
             _logger.LogInformation("Счет успешно создан");
+            UpdateNextInvoiceNumber();
         }
         catch (Exception ex)
         {
@@ -131,13 +156,8 @@ public class InvoiceInputViewModels : BaseViewModel
         {
             IsBusy = true;
             _logger.LogInformation("Загрузка данных компании {CompanyINN}", CompanyINN);
-            
-            // TODO: Интеграция с Dadata/pk.adata.kz
             await Task.Delay(500); // Имитация API-запроса
-            
-            // Временные данные для демонстрации
             CompanyName = $"ООО Тестовая Компания ({CompanyINN})";
-            
             _logger.LogInformation("Данные компании загружены");
         }
         catch (Exception ex)
@@ -167,7 +187,6 @@ public class InvoiceInputViewModels : BaseViewModel
 
     private async Task LoadLastNumber()
     {
-        // TODO: Загрузка последнего номера счета
         await Task.CompletedTask;
     }
 
@@ -175,7 +194,6 @@ public class InvoiceInputViewModels : BaseViewModel
     {
         if (EqualityComparer<T>.Default.Equals(field, value))
             return false;
-
         field = value;
         OnPropertyChanged(propertyName);
         return true;

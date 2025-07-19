@@ -23,6 +23,23 @@
 
             <!-- Основные поля -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                <ComboBox
+                    ItemsSource="{Binding OrganizationTypes}"
+                    SelectedItem="{Binding SelectedOrgType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Width="150"
+                    Margin="0,0,10,0">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding }" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBox
+                    materialDesign:HintAssist.Hint="Номер счета"
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                    Margin="0,5,10,5"
+                    Width="200"
+                    Text="{Binding ContractNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                 <TextBox
                     materialDesign:HintAssist.Hint="ИНН/БИН"
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
