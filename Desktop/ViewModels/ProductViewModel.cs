@@ -123,6 +123,7 @@ public class ProductViewModel : BaseViewModel
         {
             IsBusy = false;
             UpdateCommands();
+            await Task.CompletedTask;
         }
     }
 
@@ -180,6 +181,7 @@ public class ProductViewModel : BaseViewModel
         {
             IsBusy = false;
             UpdateCommands();
+            await Task.CompletedTask;
         }
     }
 
