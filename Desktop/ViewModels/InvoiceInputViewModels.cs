@@ -33,7 +33,13 @@ public class InvoiceInputViewModels : BaseViewModel
     public string? CompanyINN 
     { 
         get => _companyINN;
-        set => SetProperty(ref _companyINN, value);
+        set
+        {
+            if (SetProperty(ref _companyINN, value))
+            {
+                UpdateCommands();
+            }
+        }
     }
 
     public string? CompanyName 
@@ -45,19 +51,41 @@ public class InvoiceInputViewModels : BaseViewModel
     public string? ContractNumber 
     { 
         get => _contractNumber;
-        set => SetProperty(ref _contractNumber, value);
+        set
+        {
+            if (SetProperty(ref _contractNumber, value))
+            {
+                UpdateCommands();
+            }
+        }
     }
 
     public DateTime ContractDate 
     { 
         get => _contractDate;
-        set => SetProperty(ref _contractDate, value);
+        set
+        {
+            if (SetProperty(ref _contractDate, value))
+            {
+                UpdateCommands();
+            }
+        }
     }
 
     public bool IsBusy
     {
         get => _isBusy;
         set => SetProperty(ref _isBusy, value);
+    }
+
+    private void UpdateCommands()
+    {
+        // Обновляем команды только если не заняты
+        if (!IsBusy)
+        {
+            CreateInvoiceCommand.RaiseCanExecuteChanged();
+            LoadCompanyDataCommand.RaiseCanExecuteChanged();
+        }
     }
 
     private bool CanCreateInvoice()
@@ -93,6 +121,7 @@ public class InvoiceInputViewModels : BaseViewModel
         finally
         {
             IsBusy = false;
+            UpdateCommands();
         }
     }
 
@@ -119,6 +148,7 @@ public class InvoiceInputViewModels : BaseViewModel
         finally
         {
             IsBusy = false;
+            UpdateCommands();
         }
     }
 

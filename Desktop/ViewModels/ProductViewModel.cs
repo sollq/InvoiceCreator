@@ -31,13 +31,30 @@ public class ProductViewModel : BaseViewModel
     public Product? SelectedProduct
     {
         get => _selectedProduct;
-        set => SetProperty(ref _selectedProduct, value);
+        set
+        {
+            if (SetProperty(ref _selectedProduct, value))
+            {
+                UpdateCommands();
+            }
+        }
     }
 
     public bool IsBusy
     {
         get => _isBusy;
         set => SetProperty(ref _isBusy, value);
+    }
+
+    private void UpdateCommands()
+    {
+        // Обновляем команды только если не заняты
+        if (!IsBusy)
+        {
+            AddCommand.RaiseCanExecuteChanged();
+            EditCommand.RaiseCanExecuteChanged();
+            DeleteCommand.RaiseCanExecuteChanged();
+        }
     }
 
     private bool CanAdd()
@@ -73,6 +90,7 @@ public class ProductViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
+            UpdateCommands();
         }
     }
 
@@ -104,6 +122,7 @@ public class ProductViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
+            UpdateCommands();
         }
     }
 
@@ -130,6 +149,7 @@ public class ProductViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
+            UpdateCommands();
         }
     }
 
@@ -159,6 +179,7 @@ public class ProductViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
+            UpdateCommands();
         }
     }
 
