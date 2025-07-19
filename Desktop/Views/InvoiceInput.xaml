@@ -13,7 +13,9 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
 
-    <Grid DataContext="{Binding InvoiceCreationVM}">
+    <Grid 
+        d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}" 
+          DataContext="{Binding InvoiceCreationVM}">
         <StackPanel Margin="20">
             <!-- Заголовок -->
             <TextBlock Text="Создание счета"

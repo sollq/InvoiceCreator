@@ -6,7 +6,7 @@
         xmlns:viewModels="clr-namespace:Desktop.ViewModels"
         xmlns:views="clr-namespace:Desktop.Views"
         d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}"
-        Title="Генератор счетов" Height="600" Width="1000"
+        Title="Генератор счетов" Height="750" Width="1000"
         mc:Ignorable="d">
     <Grid>
         <TabControl>
