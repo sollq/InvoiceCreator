@@ -13,9 +13,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
 
-    <Grid 
-        d:DataContext="{d:DesignInstance Type=viewModels:MainViewModel}" 
-          DataContext="{Binding InvoiceCreationVM}">
+    <Grid DataContext="{Binding InvoiceCreationVM}">
         <StackPanel Margin="20">
             <!-- Заголовок -->
             <TextBlock Text="Создание счета"
@@ -46,7 +44,7 @@
                     Text="{Binding ContractNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                 <DatePicker
                     materialDesign:HintAssist.Hint="Дата договора"
-                    Style="{StaticResource MaterialDesignDatePicker}"
+                    Style="{StaticResource MaterialDesignOutlinedDatePicker}"
                     Margin="0,5,10,5"
                     Width="200"
                     SelectedDate="{Binding ContractDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
