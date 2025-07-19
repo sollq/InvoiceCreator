@@ -11,6 +11,5 @@ public class InvoiceInput
     public string CompanyAddress { get; set; } = string.Empty;
     public string ContractNumber { get; set; } = string.Empty;
     public DateTime ContractDate { get; set; }
-    public List<Product> Products { get; set; } = new();
-    // Можно добавить другие поля по необходимости
+    public List<Product> Products { get; set; } = [];
 }

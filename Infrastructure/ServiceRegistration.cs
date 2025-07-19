@@ -9,15 +9,15 @@ namespace Infrastructure;
 
 public class ServiceRegistration : IServiceRegistration
 {
-    public void ConfigureServices(IServiceCollection services)
+    public void ConfigureServices(IServiceCollection services, IConfigurationRoot config)
     {
         services.AddSingleton<INumberToWordsConverter, NumberToWordsConverter>();
-        services.AddTransient<IInvoiceOrchestrator, InvoiceOrchestrator>();
         services.AddSingleton<IInvoiceNumberCounterService, InvoiceNumberCounterService>();
-        services.AddScoped<IInvoicePdfGenerator, KzInvoicePdfGenerator>();
-        services.AddScoped<IInvoicePdfGenerator, RuInvoicePdfGenerator>();
+        services.AddScoped<KzInvoicePdfGenerator>();
+        services.AddScoped<RuInvoicePdfGenerator>();
         services.AddScoped<IInvoicePdfGeneratorFactory, InvoicePdfGeneratorFactory>();
         services.AddSingleton<IMyCompanyInfoProvider, MyCompanyInfoProvider>();
         services.AddSingleton<IInvoiceSaveService, InvoiceSaveService>();
+        services.AddTransient<IInvoiceOrchestrator, InvoiceOrchestrator>();
     }
 } 

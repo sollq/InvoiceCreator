@@ -30,11 +30,14 @@ public partial class App : Application
             builder.AddDebug();
         });
 
+        services.AddSingleton<IConfiguration>(config);
+        services.AddSingleton<IConfigurationRoot>(config);
+
         services.AddSingleton<IServiceRegistration, Infrastructure.ServiceRegistration>();
 
         // Вызов регистрации инфраструктурных сервисов
         var serviceRegistration = services.BuildServiceProvider().GetRequiredService<IServiceRegistration>();
-        serviceRegistration.ConfigureServices(services);
+        serviceRegistration.ConfigureServices(services, config);
 
         // Регистрация ViewModels
         services.AddTransient<ProductViewModel>();

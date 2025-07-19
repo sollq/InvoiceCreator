@@ -22,6 +22,6 @@ public class RuInvoicePdfGenerator : IInvoicePdfGenerator
         //            });
         //    });
         //});
-        return null;
+        throw new NotImplementedException();
     }
 }

@@ -35,7 +35,7 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
                     throw new ArgumentException("Unknown org type");
             }
             Save(data);
-            return $"СЧЕТ-{next:D5}";
+            return $"{next}";
         }
     }
 
@@ -48,7 +48,7 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
             OrganizationType.Kz => data.Kz + 1,
             _ => throw new ArgumentException("Unknown org type")
         };
-        return $"СЧЕТ-{next:D5}";
+        return $"{next}";
     }
 
     private CounterData Load()

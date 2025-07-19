@@ -105,11 +105,11 @@ public class ProductViewModel : BaseViewModel
             var newProduct = new Product
             {
                 Id = Products.Count + 1,
-                Name = "Новый продукт",
-                Quantity = 1,
+                Name = "Оказание услуг по\r\n организации \r\nвыпуска \r\nдекларации по 435\r\n решению на \r\nпартию",
+                Quantity = 4,
                 Code = "123",
                 Unit = "одна",
-                Price = 0
+                Price = 1000
             };
             
             Products.Add(newProduct);

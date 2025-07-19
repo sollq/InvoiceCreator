@@ -3,13 +3,13 @@ using Core.Models;
 using Core.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Desktop.ViewModels;
 
 public class InvoiceInputViewModels : BaseViewModel
 {
     private readonly ILogger<InvoiceInputViewModels> _logger;
+    private readonly IInvoiceNumberCounterService _counterService;
     private readonly IInvoiceOrchestrator _orchestrator;
 
     public Array OrganizationTypes { get; } = Enum.GetValues(typeof(OrganizationType));
@@ -22,7 +22,7 @@ public class InvoiceInputViewModels : BaseViewModel
         {
             if (SetProperty(ref _selectedOrgType, value))
             {
-                // Можно обновлять номер счета, если нужно
+                UpdateNextInvoiceNumber();
             }
         }
     }
@@ -41,13 +41,16 @@ public class InvoiceInputViewModels : BaseViewModel
     public InvoiceInputViewModels(
         ILogger<InvoiceInputViewModels> logger,
         ProductViewModel productViewModel,
+        IInvoiceNumberCounterService counterService, 
         IInvoiceOrchestrator orchestrator)
     {
-        _logger = logger;
         _orchestrator = orchestrator;
+        _logger = logger;
+        _counterService = counterService;
         ProductVM = productViewModel;
         CreateInvoiceCommand = new AsyncRelayCommand(async _ => await CreateInvoice(), _ => CanCreateInvoice());
         LoadCompanyDataCommand = new AsyncRelayCommand(async _ => await LoadCompanyData(), _ => CanLoadCompanyData());
+        UpdateNextInvoiceNumber();
     }
 
     public string? CompanyINN 
@@ -67,13 +70,11 @@ public class InvoiceInputViewModels : BaseViewModel
         get => _companyName;
         set => SetProperty(ref _companyName, value);
     }
-
     public string? CompanyAddress
     {
         get => _companyAddress;
         set => SetProperty(ref _companyAddress, value);
     }
-
     public string? ContractNumber 
     { 
         get => _contractNumber;
@@ -98,13 +99,17 @@ public class InvoiceInputViewModels : BaseViewModel
         set => SetProperty(ref _isBusy, value);
     }
 
+    private void UpdateNextInvoiceNumber()
+    {
+        ContractNumber = _counterService.PeekNextNumber(SelectedOrgType);
+    }
+
     private void UpdateCommands()
     {
-        if (!IsBusy)
-        {
-            CreateInvoiceCommand.RaiseCanExecuteChanged();
-            LoadCompanyDataCommand.RaiseCanExecuteChanged();
-        }
+        if (IsBusy) 
+            return;
+        CreateInvoiceCommand.RaiseCanExecuteChanged();
+        LoadCompanyDataCommand.RaiseCanExecuteChanged();
     }
 
     private bool CanCreateInvoice()
@@ -133,10 +138,10 @@ public class InvoiceInputViewModels : BaseViewModel
                 CompanyAddress = CompanyAddress ?? string.Empty,
                 ContractNumber = ContractNumber ?? string.Empty,
                 ContractDate = ContractDate,
-                Products = ProductVM.Products.ToList()
+                Products = [.. ProductVM.Products]
             };
             var path = await _orchestrator.CreateInvoiceAsync(input);
-            _logger.LogInformation("Счет успешно создан и сохранен: {Path}", path);
+             _logger.LogInformation("Счет успешно создан и сохранен: {Path}", path);
             // Можно показать Snackbar/MessageBox
         }
         catch (Exception ex)
@@ -150,6 +155,7 @@ public class InvoiceInputViewModels : BaseViewModel
             UpdateCommands();
         }
     }
+
 
     private async Task LoadCompanyData()
     {
@@ -174,6 +180,19 @@ public class InvoiceInputViewModels : BaseViewModel
     }
 
     public async Task InitAsync()
+    {
+        try
+        {
+            await LoadLastNumber();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка при инициализации");
+            throw;
+        }
+    }
+
+    private async Task LoadLastNumber()
     {
         await Task.CompletedTask;
     }
