@@ -15,11 +15,11 @@
 
     <Grid DataContext="{Binding InvoiceCreationVM}">
         <StackPanel Margin="20">
-            <!-- Заголовок -->
+            <!-- Заголовок --><!--
             <TextBlock Text="Создание счета"
                        Style="{StaticResource MaterialDesignHeadline5TextBlock}"
                        HorizontalAlignment="Center"
-                       Margin="0,0,0,20" />
+                       Margin="0,0,0,20" />-->
 
             <!-- Основные поля -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
@@ -39,7 +39,7 @@
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
                     Margin="0,5,10,5"
                     Width="200"
-                    Text="{Binding ContractNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                    Text="{Binding InvoiceNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                 <TextBox
                     materialDesign:HintAssist.Hint="ИНН/БИН"
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
@@ -74,6 +74,14 @@
                     Margin="0,5,10,5"
                     Width="400"
                     Text="{Binding CompanyName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                <TextBox
+                    materialDesign:HintAssist.Hint="Адрес компании"
+                    Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                    Margin="0,5,10,5"
+                    Width="400"
+                    Text="{Binding CompanyAddress, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
             </StackPanel>
 
             <!-- Продукты -->

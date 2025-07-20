@@ -24,8 +24,8 @@ public class KzInvoicePdfGenerator : IInvoicePdfGenerator
             container.Page(page =>
             {
                 page.Size(PageSizes.A4);
-                page.Margin(75);
-                page.DefaultTextStyle(x => x.FontFamily("Times New Roman").FontSize(11));
+                page.Margin(70);
+                page.DefaultTextStyle(x => x.FontFamily("Times New Roman").FontSize(10));
                 page.Content().Column(col =>
                 {
                     // --- Блок с реквизитами ---
@@ -92,7 +92,9 @@ public class KzInvoicePdfGenerator : IInvoicePdfGenerator
 
                     // --- Заголовок счета ---
                     col.Item().PaddingTop(15).Text($"Счет на оплату №{data.InvoiceNumber} от {data.Date:yyyy-MM-dd}")
-                        .Bold().FontSize(16).AlignLeft().FontFamily("Times New Roman");
+                        .Bold().FontSize(15).AlignLeft().FontFamily("Times New Roman");
+
+                    col.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Black);
 
                     // --- Поставщик/Покупатель/Договор ---
                     col.Item().PaddingTop(10).Text(t =>
@@ -107,8 +109,8 @@ public class KzInvoicePdfGenerator : IInvoicePdfGenerator
                     });
                     col.Item().Text(t =>
                     {
-                        t.Span("Договор: ").Bold();
-                        t.Span($"{data.ContractNumber} от {data.Date:dd.MM.yyyy}").Bold();
+                        t.Span("Договор: ");
+                        t.Span($"ЕС/{data.ContractNumber}/{data.Date:yyyy} от {data.Date:dd.MM.yyyy}").Bold();
                     });
 
                     // --- Таблица товаров/услуг ---
@@ -156,26 +158,27 @@ public class KzInvoicePdfGenerator : IInvoicePdfGenerator
                     });
 
                     // --- Итоги и пропись ---
-                    col.Item().PaddingTop(10).Background("#f0f0f0").AlignRight().Text($"\t\tИтого: \t\t{data.TotalAmount:0.00}").Bold().AlignCenter();
-                    col.Item().PaddingTop(10).Background("#f0f0f0").Text($"В том числе НДС:").Bold().AlignRight();
-                    col.Item().PaddingTop(10).Text($"Всего наименований {data.Products.Count}, на сумму {data.TotalAmount:### ### ##0.00} KZT");
-                    col.Item().Text($"Всего к оплате: {data.TotalAmountText}");
-
-                    // --- Подпись ---
-                    col.Item().PaddingTop(30).Table(table =>
+                    col.Item().PaddingTop(10).AlignRight().Column(summary =>
                     {
-                        table.ColumnsDefinition(columns =>
+                        summary.Item().Row(row =>
                         {
-                            columns.RelativeColumn();
-                            columns.RelativeColumn();
+                            row.RelativeColumn().Text("Итого:").Bold();
+                            row.ConstantColumn(100).AlignRight().Text($"{data.TotalAmount:0.00}").Bold();
                         });
 
-                        table.Cell().Text("Исполнитель:").Bold();
-                        table.Cell().Text("_________________________");
-
-                        table.Cell().Text("М.П.").Bold();
-                        table.Cell().Text(""); // Пустая ячейка под печать
+                        summary.Item().Row(row =>
+                        {
+                            row.RelativeColumn().Text("В том числе НДС:").Bold();
+                            //row.ConstantColumn(100).AlignRight().Text(data.VatText ?? "(нет)").Bold();
+                        });
                     });
+
+                    col.Item().PaddingTop(10).Text($"Всего наименований {data.Products.Count}, на сумму {data.TotalAmount:### ### ##0.00} KZT").Bold();
+                    col.Item().Text($"Всего к оплате: {data.TotalAmountText}").Bold();
+                    
+                    col.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Black);
+                    col.Item().Text("Исполнитель: ____________________________________ //").Bold();
+                    
 
                 });
             });
@@ -186,6 +189,6 @@ public class KzInvoicePdfGenerator : IInvoicePdfGenerator
 
     private QuestPDF.Infrastructure.IContainer CellStyle(QuestPDF.Infrastructure.IContainer container)
     {
-        return container.Border(1).Padding(1).AlignMiddle().AlignCenter();
+        return container.Border(0.5f).Padding(1).AlignMiddle().AlignCenter();
     }
 }

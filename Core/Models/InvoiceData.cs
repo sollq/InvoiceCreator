@@ -10,7 +10,7 @@ public class InvoiceData
     public OrganizationType OrgType;
     public required List<Product> Products;
     public required SupplierInfo Seller;
-    public string? Subject;
     public decimal TotalAmount;
     public string? TotalAmountText;
+    public string? VatText;
 }

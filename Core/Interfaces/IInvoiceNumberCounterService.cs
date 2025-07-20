@@ -4,6 +4,6 @@ namespace Core.Interfaces;
 
 public interface IInvoiceNumberCounterService
 {
-    string PeekNextNumber(OrganizationType org);
     string GetNextNumber(OrganizationType org);
+    string SetNextNumber(OrganizationType org);
 }

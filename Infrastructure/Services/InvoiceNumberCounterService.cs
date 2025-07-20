@@ -15,7 +15,7 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
         public int Kz { get; set; }
     }
 
-    public string GetNextNumber(OrganizationType org)
+    public string SetNextNumber(OrganizationType org)
     {
         lock (_lock)
         {
@@ -39,7 +39,7 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
         }
     }
 
-    public string PeekNextNumber(OrganizationType org)
+    public string GetNextNumber(OrganizationType org)
     {
         var data = Load();
         var next = org switch

@@ -15,7 +15,7 @@ public class InvoiceOrchestrator(
 {
     public async Task<string> CreateInvoiceAsync(InvoiceInput input)
     {
-        var invoiceNumber = counterService.GetNextNumber(input.OrgType);
+        var invoiceNumber = input.InvoiceNumber;
 
         var invoiceData = new InvoiceData
         {
@@ -41,6 +41,8 @@ public class InvoiceOrchestrator(
         var savePath = saveService.GetSavePath(invoiceNumber, config);
         await saveService.SaveAsync(savePath, pdfBytes);
 
+        counterService.SetNextNumber(input.OrgType);
+        
         return savePath;
     }
 }

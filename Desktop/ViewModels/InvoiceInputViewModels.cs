@@ -31,6 +31,7 @@ public class InvoiceInputViewModels : BaseViewModel
     private string? _companyName;
     private string? _companyAddress;
     private string? _contractNumber;
+    private string? _invoiceNumber;
     private DateTime _contractDate = DateTime.Today;
     private bool _isBusy;
 
@@ -75,6 +76,11 @@ public class InvoiceInputViewModels : BaseViewModel
         get => _companyAddress;
         set => SetProperty(ref _companyAddress, value);
     }
+    public string? InvoiceNumber
+    {
+        get => _invoiceNumber;
+        set => SetProperty(ref _invoiceNumber, value);
+    }
     public string? ContractNumber 
     { 
         get => _contractNumber;
@@ -101,7 +107,7 @@ public class InvoiceInputViewModels : BaseViewModel
 
     private void UpdateNextInvoiceNumber()
     {
-        ContractNumber = _counterService.PeekNextNumber(SelectedOrgType);
+        InvoiceNumber = _counterService.GetNextNumber(SelectedOrgType);
     }
 
     private void UpdateCommands()
@@ -136,13 +142,14 @@ public class InvoiceInputViewModels : BaseViewModel
                 CompanyINN = CompanyINN ?? string.Empty,
                 CompanyName = CompanyName ?? string.Empty,
                 CompanyAddress = CompanyAddress ?? string.Empty,
+                InvoiceNumber = InvoiceNumber ?? string.Empty,
                 ContractNumber = ContractNumber ?? string.Empty,
                 ContractDate = ContractDate,
                 Products = [.. ProductVM.Products]
             };
             var path = await _orchestrator.CreateInvoiceAsync(input);
              _logger.LogInformation("Счет успешно создан и сохранен: {Path}", path);
-            // Можно показать Snackbar/MessageBox
+             UpdateNextInvoiceNumber();
         }
         catch (Exception ex)
         {
@@ -165,6 +172,8 @@ public class InvoiceInputViewModels : BaseViewModel
             _logger.LogInformation("Загрузка данных компании {CompanyINN}", CompanyINN);
             await Task.Delay(500); // Имитация API-запроса
             CompanyName = $"ООО Тестовая Компания ({CompanyINN})";
+            CompanyAddress = $"Тестовый адресс";
+            ContractNumber ??= "1";
             _logger.LogInformation("Данные компании загружены");
         }
         catch (Exception ex)
