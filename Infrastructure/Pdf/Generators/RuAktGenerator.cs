@@ -105,7 +105,7 @@ public class RuAktGenerator : IPdfGenerator
 
                     // --- Сумма прописью и финальный текст ---
                     col.Item().PaddingTop(15).Text(
-                        $"Всего выполнено работ (оказано услуг) на сумму: {data.TotalAmount:### ### ##0.00} руб. ({data.TotalAmountText})");
+                        $"Всего выполнено работ (оказано услуг) на сумму: {data.TotalAmount:### ### ##0.00} ({data.TotalAmountText})");
 
                     col.Item().PaddingTop(5).Text(
                         "Все обязательства выполнены исполнителем полностью и в срок, приняты заказчиком в полном объёме и без замечаний. Заказчик претензий к исполнителю не имеет.");
@@ -150,5 +150,4 @@ public class RuAktGenerator : IPdfGenerator
         [11] = "ноября",
         [12] = "декабря"
     };
-
 }
