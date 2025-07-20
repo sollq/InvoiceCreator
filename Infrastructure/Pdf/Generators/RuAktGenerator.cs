@@ -36,7 +36,7 @@ public class RuAktGenerator : IPdfGenerator
                     });
                     col.Item().Row(row =>
                     {
-                        row.RelativeItem().Text($"Акт № {data.InvoiceNumber} от «{data.Date:dd}» {data.Date:MMMM yyyy} г.")
+                        row.RelativeItem().Text($"Акт № {data.InvoiceNumber} от «{data.Date:dd}» {RussianMonthGenitive[data.Date.Month]} {data.Date:yyyy} г.")
                             .FontSize(14).Bold().AlignCenter();
                     });
 
@@ -55,7 +55,7 @@ public class RuAktGenerator : IPdfGenerator
                     col.Item().Text(t =>
                     {
                         t.Span("Основание: ").Bold();
-                        t.Span($"Оплата услуг по договору \u2116 НС/{data.ContractNumber}/24 {data.Date:dd MMMM yyyy} г.");
+                        t.Span($"Оплата услуг по договору \u2116 НС/{data.ContractNumber}/25 {data.Date:dd MMMM yyyy} г.");
                     });
 
                     // --- Таблица работ ---
@@ -90,16 +90,16 @@ public class RuAktGenerator : IPdfGenerator
                             table.Cell().Element(CellStyle).Text(p.Name);
                             table.Cell().Element(CellStyle).Text(p.Quantity.ToString()).AlignCenter();
                             table.Cell().Element(CellStyle).Text(p.Unit ?? "").AlignCenter();
-                            table.Cell().Element(CellStyle).Text("Без НДС").Bold().AlignCenter();
                             table.Cell().Element(CellStyle).Text($"{p.Price:### ### ##0.00} руб.").AlignRight();
+                            table.Cell().Element(CellStyle).Text("Без НДС").Bold().AlignCenter();
                             table.Cell().Element(CellStyle).Text($"{p.Total:### ### ##0.00} руб.").AlignRight();
                         }
 
                         // Footer итоги
-                        table.Cell().ColumnSpan(6).Element(NoBorderCellStyle).AlignRight().Text("Итого:").Bold();
+                        table.Cell().ColumnSpan(6).Element(NoBorderCellStyle).AlignRight().Text("Итого: ").Bold();
                         table.Cell().Element(CellStyle).AlignRight().Text($"{data.TotalAmount:### ### ##0.00}").Bold();
 
-                        table.Cell().ColumnSpan(6).Element(NoBorderCellStyle).AlignRight().Text("В том числе НДС:").Bold();
+                        table.Cell().ColumnSpan(6).Element(NoBorderCellStyle).AlignRight().Text("В том числе НДC: ").Bold();
                         table.Cell().Element(CellStyle).AlignRight().Text("0 руб.").Bold();
                     });
 
@@ -135,4 +135,20 @@ public class RuAktGenerator : IPdfGenerator
     {
         return container.Border(0).Padding(1).AlignMiddle().AlignCenter();
     }
+    private static readonly Dictionary<int, string> RussianMonthGenitive = new()
+    {
+        [1] = "января",
+        [2] = "февраля",
+        [3] = "марта",
+        [4] = "апреля",
+        [5] = "мая",
+        [6] = "июня",
+        [7] = "июля",
+        [8] = "августа",
+        [9] = "сентября",
+        [10] = "октября",
+        [11] = "ноября",
+        [12] = "декабря"
+    };
+
 }

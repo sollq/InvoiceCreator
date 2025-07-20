@@ -33,6 +33,9 @@
     <None Update="Stamps\kz.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Stamps\qrcode.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Stamps\ru.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
