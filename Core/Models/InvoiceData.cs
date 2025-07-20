@@ -7,7 +7,7 @@ public class InvoiceData
     public string? ContractNumber;
     public DateTime Date;
     public required string InvoiceNumber;
-    public OrganizationType OrgType;
+    public InvoiceType OrgType;
     public required List<Product> Products;
     public required SupplierInfo Seller;
     public decimal TotalAmount;

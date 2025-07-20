@@ -15,7 +15,7 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
         public int Kz { get; set; }
     }
 
-    public string SetNextNumber(OrganizationType org)
+    public string SetNextNumber(InvoiceType org)
     {
         lock (_lock)
         {
@@ -23,11 +23,11 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
             int next;
             switch (org)
             {
-                case OrganizationType.Ru:
+                case InvoiceType.Ru:
                     data.Ru++;
                     next = data.Ru;
                     break;
-                case OrganizationType.Kz:
+                case InvoiceType.Kz:
                     data.Kz++;
                     next = data.Kz;
                     break;
@@ -39,13 +39,13 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
         }
     }
 
-    public string GetNextNumber(OrganizationType org)
+    public string GetNextNumber(InvoiceType org)
     {
         var data = Load();
         var next = org switch
         {
-            OrganizationType.Ru => data.Ru + 1,
-            OrganizationType.Kz => data.Kz + 1,
+            InvoiceType.Ru => data.Ru + 1,
+            InvoiceType.Kz => data.Kz + 1,
             _ => throw new ArgumentException("Unknown org type")
         };
         return $"{next}";

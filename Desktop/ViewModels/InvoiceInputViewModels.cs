@@ -10,12 +10,12 @@ public class InvoiceInputViewModels : BaseViewModel
 {
     private readonly ILogger<InvoiceInputViewModels> _logger;
     private readonly IInvoiceNumberCounterService _counterService;
-    private readonly IInvoiceOrchestrator _orchestrator;
+    private readonly IPdfOrchestrator _andAktsOrchestrator;
 
-    public Array OrganizationTypes { get; } = Enum.GetValues(typeof(OrganizationType));
+    public Array OrganizationTypes { get; } = Enum.GetValues(typeof(InvoiceType));
 
-    private OrganizationType _selectedOrgType = OrganizationType.Ru;
-    public OrganizationType SelectedOrgType
+    private InvoiceType _selectedOrgType = InvoiceType.Ru;
+    public InvoiceType SelectedOrgType
     {
         get => _selectedOrgType;
         set
@@ -43,9 +43,9 @@ public class InvoiceInputViewModels : BaseViewModel
         ILogger<InvoiceInputViewModels> logger,
         ProductViewModel productViewModel,
         IInvoiceNumberCounterService counterService, 
-        IInvoiceOrchestrator orchestrator)
+        IPdfOrchestrator andAktsOrchestrator)
     {
-        _orchestrator = orchestrator;
+        _andAktsOrchestrator = andAktsOrchestrator;
         _logger = logger;
         _counterService = counterService;
         ProductVM = productViewModel;
@@ -147,7 +147,7 @@ public class InvoiceInputViewModels : BaseViewModel
                 ContractDate = ContractDate,
                 Products = [.. ProductVM.Products]
             };
-            var path = await _orchestrator.CreateInvoiceAsync(input);
+            var path = await _andAktsOrchestrator.CreateInvoiceAsync(input);
              _logger.LogInformation("Счет успешно создан и сохранен: {Path}", path);
              UpdateNextInvoiceNumber();
         }

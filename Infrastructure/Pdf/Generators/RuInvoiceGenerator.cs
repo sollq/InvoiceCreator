@@ -2,9 +2,9 @@
 using Core.Models;
 using Infrastructure.Pdf.Interfaces;
 
-namespace Infrastructure.Pdf;
+namespace Infrastructure.Pdf.Generators;
 
-public class RuInvoicePdfGenerator : IInvoicePdfGenerator
+public class RuInvoiceGenerator : IInvoicePdfGenerator
 {
     public byte[] Generate(InvoiceData data)
     {

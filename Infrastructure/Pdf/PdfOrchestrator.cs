@@ -1,17 +1,18 @@
 ﻿using Core.Interfaces;
 using Core.Models;
 using Infrastructure.Pdf.Interfaces;
+using Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Pdf;
 
-public class InvoiceOrchestrator(
-    IInvoicePdfGeneratorFactory factory,
+public class PdfOrchestrator(
+    IPdfGeneratorFactory factory,
     IInvoiceNumberCounterService counterService,
     IMyCompanyInfoProvider companyProvider,
-    IInvoiceSaveService saveService,
+    ISaveService saveService,
     INumberToWordsConverter numberToWordsConverter,
-    IConfiguration config) : IInvoiceOrchestrator
+    IConfiguration config) : IPdfOrchestrator
 {
     public async Task<string> CreateInvoiceAsync(InvoiceInput input)
     {

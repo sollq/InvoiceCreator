@@ -4,5 +4,5 @@ namespace Core.Interfaces;
 
 public interface IMyCompanyInfoProvider
 {
-    SupplierInfo GetInfo(OrganizationType type);
+    SupplierInfo GetInfo(InvoiceType type);
 } 

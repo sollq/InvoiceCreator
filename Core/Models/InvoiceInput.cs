@@ -5,7 +5,7 @@ namespace Core.Models;
 
 public class InvoiceInput
 {
-    public OrganizationType OrgType { get; set; }
+    public InvoiceType OrgType { get; set; }
     public string CompanyINN { get; set; } = string.Empty;
     public string CompanyName { get; set; } = string.Empty;
     public string CompanyAddress { get; set; } = string.Empty;

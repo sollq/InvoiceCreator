@@ -9,7 +9,7 @@ using Infrastructure.Pdf.Interfaces;
 using System.IO;
 using QuestPDF.Drawing;
 
-namespace Infrastructure.Pdf;
+namespace Infrastructure.Pdf.Generators;
 
 public class KzInvoicePdfGenerator : IInvoicePdfGenerator
 {

@@ -1,9 +1,10 @@
 using Core.Interfaces;
+using Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Services;
 
-public class InvoiceSaveService : IInvoiceSaveService
+public class SaveService : ISaveService
 {
     public string GetSavePath(string invoiceNumber, IConfiguration config)
     {

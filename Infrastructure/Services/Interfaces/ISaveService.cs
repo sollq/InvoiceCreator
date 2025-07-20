@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Configuration;
 
-namespace Core.Interfaces;
+namespace Infrastructure.Services.Interfaces;
 
-public interface IInvoiceSaveService
+public interface ISaveService
 {
     string GetSavePath(string invoiceNumber, IConfiguration config);
     Task SaveAsync(string path, byte[] data);

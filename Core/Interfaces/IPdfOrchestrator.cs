@@ -2,7 +2,7 @@
 
 namespace Core.Interfaces;
 
-public interface IInvoiceOrchestrator
+public interface IPdfOrchestrator
 {
     Task<string> CreateInvoiceAsync(InvoiceInput input);
 }
