@@ -1,8 +1,8 @@
 ﻿using Core.Models;
 
-namespace Infrastructure.Integrations.Interfaces;
+namespace Core.Interfaces;
 
 public interface IInfoResolver
 {
-    public SupplierInfo GetPartyInfo(InvoiceType type, string id);
+    public Task<SupplierInfo> GetPartyInfo(InvoiceType type, string id);
 }

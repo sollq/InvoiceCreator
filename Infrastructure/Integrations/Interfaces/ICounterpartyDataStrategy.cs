@@ -4,5 +4,5 @@ namespace Infrastructure.Integrations.Interfaces;
 
 public interface ICounterpartyDataStrategy
 {
-    SupplierInfo GetData(string id);
+    Task<SupplierInfo> GetData(string id);
 }

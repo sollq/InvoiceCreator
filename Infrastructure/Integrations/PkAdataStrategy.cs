@@ -5,7 +5,7 @@ namespace Infrastructure.Integrations;
 
 public class PkAdataStrategy : ICounterpartyDataStrategy
 {
-    public SupplierInfo GetData(string id)
+    public Task<SupplierInfo> GetData(string id)
     {
         throw new NotImplementedException();
     }

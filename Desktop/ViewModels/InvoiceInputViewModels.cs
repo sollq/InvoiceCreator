@@ -1,8 +1,10 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Core.Interfaces;
 using Core.Models;
-using Core.Interfaces;
+using Infrastructure.Integrations;
+using Infrastructure.Integrations.Interfaces;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Desktop.ViewModels;
 
@@ -10,8 +12,8 @@ public class InvoiceInputViewModels : BaseViewModel
 {
     private readonly ILogger<InvoiceInputViewModels> _logger;
     private readonly IInvoiceNumberCounterService _counterService;
-    private readonly IPdfOrchestrator _andAktsOrchestrator;
-
+    private readonly IPdfOrchestrator _pdfOrchestrator;
+    private readonly IInfoResolver _infoResolver;
     public Array OrganizationTypes { get; } = Enum.GetValues(typeof(InvoiceType));
 
     private InvoiceType _selectedOrgType = InvoiceType.Ru;
@@ -43,9 +45,11 @@ public class InvoiceInputViewModels : BaseViewModel
         ILogger<InvoiceInputViewModels> logger,
         ProductViewModel productViewModel,
         IInvoiceNumberCounterService counterService, 
-        IPdfOrchestrator andAktsOrchestrator)
+        IPdfOrchestrator pdfOrchestrator, 
+        IInfoResolver infoResolver)
     {
-        _andAktsOrchestrator = andAktsOrchestrator;
+        _pdfOrchestrator = pdfOrchestrator;
+        _infoResolver = infoResolver;
         _logger = logger;
         _counterService = counterService;
         ProductVM = productViewModel;
@@ -147,7 +151,7 @@ public class InvoiceInputViewModels : BaseViewModel
                 ContractDate = ContractDate,
                 Products = [.. ProductVM.Products]
             };
-            var path = await _andAktsOrchestrator.CreateInvoiceAsync(input);
+            var path = await _pdfOrchestrator.CreateInvoiceAsync(input);
              _logger.LogInformation("Счет успешно создан и сохранен: {Path}", path);
              UpdateNextInvoiceNumber();
         }
@@ -171,6 +175,7 @@ public class InvoiceInputViewModels : BaseViewModel
             IsBusy = true;
             _logger.LogInformation("Загрузка данных компании {CompanyINN}", CompanyINN);
             await Task.Delay(500); // Имитация API-запроса
+            await _infoResolver.GetPartyInfo();
             CompanyName = $"ООО Тестовая Компания ({CompanyINN})";
             CompanyAddress = $"Тестовый адресс";
             ContractNumber ??= "1";

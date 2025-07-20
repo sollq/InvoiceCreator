@@ -5,8 +5,8 @@ namespace Infrastructure.Integrations;
 
 public class AdataStrategy : ICounterpartyDataStrategy
 {
-    public SupplierInfo GetData(string id)
+    public Task<SupplierInfo> GetData(string id)
     {
         throw new NotImplementedException();
     }
-}
+}s
