@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using Core.Interfaces;
 using Desktop.ViewModels;
+using Desktop.Views;
 using Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

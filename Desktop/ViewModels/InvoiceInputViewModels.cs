@@ -15,6 +15,7 @@ public class InvoiceInputViewModels : BaseViewModel
 
     private string? _companyINNOrBin;
     private string? _companyName;
+    private string? _companyKpp;
     private DateTime _contractDate = DateTime.Today;
     private string? _contractNumber;
     private string? _invoiceNumber;
@@ -74,7 +75,11 @@ public class InvoiceInputViewModels : BaseViewModel
         get => _companyAddress;
         set => SetProperty(ref _companyAddress, value);
     }
-
+    public string? CompanyKPP
+    {
+        get => _companyKpp;
+        set => SetProperty(ref _companyKpp, value);
+    }
     public string? InvoiceNumber
     {
         get => _invoiceNumber;
@@ -133,14 +138,15 @@ public class InvoiceInputViewModels : BaseViewModel
         try
         {
             IsBusy = true;
-            var input = new InvoiceInput
+            var input = new Input
             {
-                OrgType = SelectedOrgType,
+                Type = SelectedOrgType,
                 CompanyINN = CompanyINNOrBIN ?? string.Empty,
                 CompanyName = CompanyName ?? string.Empty,
                 CompanyAddress = CompanyAddress ?? string.Empty,
                 InvoiceNumber = InvoiceNumber ?? string.Empty,
                 ContractNumber = ContractNumber ?? string.Empty,
+                CompanyKPP = CompanyKPP ?? string.Empty,
                 ContractDate = ContractDate,
                 Products = [.. ProductVM.Products]
             };
@@ -172,6 +178,7 @@ public class InvoiceInputViewModels : BaseViewModel
 
             CompanyName = info.Name;
             CompanyAddress = info.Address;
+            CompanyKPP = info.KPP;
             ContractNumber ??= "1";
             _logger.LogInformation("Данные компании загружены");
         }
@@ -200,7 +207,7 @@ public class InvoiceInputViewModels : BaseViewModel
         }
     }
 
-    private async Task LoadLastNumber()
+    private static async Task LoadLastNumber()
     {
         await Task.CompletedTask;
     }

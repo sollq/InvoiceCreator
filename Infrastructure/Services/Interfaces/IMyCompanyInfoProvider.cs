@@ -1,6 +1,6 @@
 using Core.Models;
 
-namespace Core.Interfaces;
+namespace Infrastructure.Services.Interfaces;
 
 public interface IMyCompanyInfoProvider
 {

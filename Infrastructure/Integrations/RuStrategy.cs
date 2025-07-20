@@ -38,6 +38,7 @@ public class RuStrategy : IPartyInfoStrategy
 
         clientInfo.Name = data.GetProperty("name").GetProperty("short_with_opf").GetString();
         clientInfo.Address = data.GetProperty("address").GetProperty("value").GetString();
+        clientInfo.KPP = data.GetProperty("kpp").GetString();
 
         return clientInfo;
     }

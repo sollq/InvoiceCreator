@@ -25,16 +25,19 @@ public class RuAktGenerator : IPdfGenerator
             container.Page(page =>
             {
                 page.Size(PageSizes.A4);
-                page.Margin(50);
-                page.DefaultTextStyle(x => x.FontFamily("Times New Roman").FontSize(10));
+                page.Margin(40);
+                page.DefaultTextStyle(x => x.FontFamily("Italic").FontSize(10));
                 page.Content().Column(col =>
                 {
                     // --- Логотип и заголовок ---
                     col.Item().Row(row =>
                     {
                         row.RelativeItem().Text("BLANC").Bold().FontSize(14);
+                    });
+                    col.Item().Row(row =>
+                    {
                         row.RelativeItem().Text($"Акт № {data.InvoiceNumber} от «{data.Date:dd}» {data.Date:MMMM yyyy} г.")
-                            .FontSize(14).Bold().AlignRight();
+                            .FontSize(14).Bold().AlignCenter();
                     });
 
                     col.Item().PaddingTop(10).Text(t =>
@@ -52,7 +55,7 @@ public class RuAktGenerator : IPdfGenerator
                     col.Item().Text(t =>
                     {
                         t.Span("Основание: ").Bold();
-                        t.Span($"{data.ContractTitle} от {data.Date:dd MMMM yyyy} г.");
+                        t.Span($"Оплата услуг по договору \u2116 НС/{data.ContractNumber}/24 {data.Date:dd MMMM yyyy} г.");
                     });
 
                     // --- Таблица работ ---
@@ -66,6 +69,7 @@ public class RuAktGenerator : IPdfGenerator
                             columns.ConstantColumn(45);
                             columns.ConstantColumn(60);
                             columns.ConstantColumn(50);
+                            columns.ConstantColumn(50);
                         });
 
                         table.Header(header =>
@@ -73,9 +77,10 @@ public class RuAktGenerator : IPdfGenerator
                             header.Cell().Element(CellStyle).Text("№").Bold().AlignCenter();
                             header.Cell().Element(CellStyle).Text("Наименование работ (услуг)").Bold().AlignCenter();
                             header.Cell().Element(CellStyle).Text("Кол-во").Bold().AlignCenter();
-                            header.Cell().Element(CellStyle).Text("Ед. изм.").Bold().AlignCenter();
+                            header.Cell().Element(CellStyle).Text("Ед. ").Bold().AlignCenter();
                             header.Cell().Element(CellStyle).Text("Цена за единицу").Bold().AlignCenter();
-                            header.Cell().Element(CellStyle).Text("Общая сумма").Bold().AlignCenter();
+                            header.Cell().Element(CellStyle).Text("НДС").Bold().AlignCenter();
+                            header.Cell().Element(CellStyle).Text("Общая сумма").Bold().AlignLeft();
                         });
 
                         var i = 1;
@@ -85,15 +90,16 @@ public class RuAktGenerator : IPdfGenerator
                             table.Cell().Element(CellStyle).Text(p.Name);
                             table.Cell().Element(CellStyle).Text(p.Quantity.ToString()).AlignCenter();
                             table.Cell().Element(CellStyle).Text(p.Unit ?? "").AlignCenter();
-                            table.Cell().Element(CellStyle).Text($"{p.Price:### ### ##0.00}").AlignRight();
-                            table.Cell().Element(CellStyle).Text($"{p.Total:### ### ##0.00}").AlignRight();
+                            table.Cell().Element(CellStyle).Text("Без НДС").Bold().AlignCenter();
+                            table.Cell().Element(CellStyle).Text($"{p.Price:### ### ##0.00} руб.").AlignRight();
+                            table.Cell().Element(CellStyle).Text($"{p.Total:### ### ##0.00} руб.").AlignRight();
                         }
 
                         // Footer итоги
-                        table.Cell().ColumnSpan(5).Element(CellStyle).AlignRight().Text("Итого:").Bold();
+                        table.Cell().ColumnSpan(6).Element(NoBorderCellStyle).AlignRight().Text("Итого:").Bold();
                         table.Cell().Element(CellStyle).AlignRight().Text($"{data.TotalAmount:### ### ##0.00}").Bold();
 
-                        table.Cell().ColumnSpan(5).Element(CellStyle).AlignRight().Text("В том числе НДС:").Bold();
+                        table.Cell().ColumnSpan(6).Element(NoBorderCellStyle).AlignRight().Text("В том числе НДС:").Bold();
                         table.Cell().Element(CellStyle).AlignRight().Text("0 руб.").Bold();
                     });
 
@@ -107,23 +113,12 @@ public class RuAktGenerator : IPdfGenerator
                     // --- Подписи ---
                     col.Item().PaddingTop(40).Row(row =>
                     {
-                        row.RelativeItem().Column(c =>
-                        {
-                            c.Item().Text("Исполнитель").FontSize(10);
-                            c.Item().Height(25);
-                            c.Item().Text(data.Seller.Name).Bold();
-                        });
-                        row.ConstantItem(100).Image("Stamps/kz.png").FitWidth();
+                        row.RelativeItem().Text($"Исполнитель:                                                               // {data.Seller.Name}").Bold();
+                        row.ConstantItem(130).AlignCenter().Image("Stamps/Ru.png");
                     });
-
-                    col.Item().PaddingTop(25).Row(row =>
+                    col.Item().PaddingTop(10).Row(row =>
                     {
-                        row.RelativeItem().Column(c =>
-                        {
-                            c.Item().Text("Заказчик").FontSize(10);
-                            c.Item().Height(25);
-                            c.Item().Text(data.Buyer.Name).Bold();
-                        });
+                        row.RelativeItem().Text($"Заказчик:                                                                  // {data.Buyer.Name}").Bold();
                     });
                 });
             });
@@ -135,5 +130,9 @@ public class RuAktGenerator : IPdfGenerator
     private IContainer CellStyle(IContainer container)
     {
         return container.Border(1).Padding(2).AlignMiddle().AlignCenter();
+    }
+    private IContainer NoBorderCellStyle(IContainer container)
+    {
+        return container.Border(0).Padding(1).AlignMiddle().AlignCenter();
     }
 }

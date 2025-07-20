@@ -1,75 +1,23 @@
 using Core.Interfaces;
+using Humanizer;
+using System.Globalization;
+using Core.Models;
+using Infrastructure.Services.Interfaces;
 
 namespace Infrastructure.Services;
 
 public class NumberToWordsConverter : INumberToWordsConverter
 {
-    public string Convert(decimal value)
+    public string Convert(decimal value, DocumentType inputType)
     {
-        // Для MVP: только целые суммы, только KZT/RUB, без копеек
-        var intValue = (long)value;
-        if (intValue == 0)
-            return "ноль";
-        return ToWords(intValue).Trim();
+        if (inputType == DocumentType.Kz || inputType == DocumentType.KzAkt)
+        {
+            return ConvertKz(value);
+        }
+        return $"{((long)value).ToWords(new CultureInfo("ru"))} рублей {((int)((value - (long)value) * 100)).ToWords(new CultureInfo("ru"))} копеек";
     }
-
-    // Примитивная реализация для русского языка
-    private static string ToWords(long number)
+    private static string ConvertKz(decimal value)
     {
-        switch (number)
-        {
-            case 0:
-                return "ноль";
-            case < 0:
-                return "минус " + ToWords(-number);
-        }
-
-        string[] units =
-        [
-            "", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "десять", "одиннадцать",
-            "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать",
-            "девятнадцать"
-        ];
-        string[] tens =
-        [
-            "", "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
-        ];
-        string[] hundreds =
-            ["", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"];
-        string[] thousands = ["", "тысяча", "миллион", "миллиард"];
-
-        var parts = new List<string>();
-        var thousandGroup = 0;
-        while (number > 0)
-        {
-            var n = (int)(number % 1000);
-            if (n != 0)
-            {
-                var group = new List<string>();
-                if (n % 100 < 20)
-                {
-                    if (n % 100 != 0)
-                        group.Add(units[n % 100]);
-                }
-                else
-                {
-                    if (n % 10 != 0)
-                        group.Add(units[n % 10]);
-                    if (n / 10 % 10 != 0)
-                        group.Add(tens[n / 10 % 10]);
-                }
-
-                if (n / 100 % 10 != 0)
-                    group.Add(hundreds[n / 100 % 10]);
-                if (thousandGroup > 0)
-                    group.Add(thousands[thousandGroup]);
-                parts.Insert(0, string.Join(" ", group));
-            }
-
-            number /= 1000;
-            thousandGroup++;
-        }
-
-        return string.Join(" ", parts);
+        return $"{((long)value).ToWords(new CultureInfo("ru"))} тенге {((int)((value - (long)value) * 100)).ToWords(new CultureInfo("ru"))} тиын";
     }
 }
