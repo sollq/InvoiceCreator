@@ -29,7 +29,7 @@ public class InvoiceInputViewModels : BaseViewModel
         }
     }
 
-    private string? _companyINN;
+    private string? _companyINNOrBin;
     private string? _companyName;
     private string? _companyAddress;
     private string? _contractNumber;
@@ -58,12 +58,12 @@ public class InvoiceInputViewModels : BaseViewModel
         UpdateNextInvoiceNumber();
     }
 
-    public string? CompanyINN 
+    public string? CompanyINNOrBIN 
     { 
-        get => _companyINN;
+        get => _companyINNOrBin;
         set
         {
-            if (SetProperty(ref _companyINN, value))
+            if (SetProperty(ref _companyINNOrBin, value))
             {
                 LoadCompanyDataCommand.RaiseCanExecuteChanged();
             }
@@ -125,14 +125,14 @@ public class InvoiceInputViewModels : BaseViewModel
     private bool CanCreateInvoice()
     {
         return !IsBusy && 
-               !string.IsNullOrWhiteSpace(CompanyINN) && 
+               !string.IsNullOrWhiteSpace(CompanyINNOrBIN) && 
                !string.IsNullOrWhiteSpace(ContractNumber) &&
                ContractDate != default;
     }
 
     private bool CanLoadCompanyData()
     {
-        return !IsBusy && !string.IsNullOrWhiteSpace(CompanyINN);
+        return !IsBusy && !string.IsNullOrWhiteSpace(CompanyINNOrBIN);
     }
 
     private async Task CreateInvoice()
@@ -143,7 +143,7 @@ public class InvoiceInputViewModels : BaseViewModel
             var input = new InvoiceInput
             {
                 OrgType = SelectedOrgType,
-                CompanyINN = CompanyINN ?? string.Empty,
+                CompanyINN = CompanyINNOrBIN ?? string.Empty,
                 CompanyName = CompanyName ?? string.Empty,
                 CompanyAddress = CompanyAddress ?? string.Empty,
                 InvoiceNumber = InvoiceNumber ?? string.Empty,
@@ -172,12 +172,16 @@ public class InvoiceInputViewModels : BaseViewModel
     {
         try
         {
+            if (CompanyINNOrBIN is null)
+            {
+                return;
+            }
             IsBusy = true;
-            _logger.LogInformation("Загрузка данных компании {CompanyINN}", CompanyINN);
-            await Task.Delay(500); // Имитация API-запроса
-            await _infoResolver.GetPartyInfo();
-            CompanyName = $"ООО Тестовая Компания ({CompanyINN})";
-            CompanyAddress = $"Тестовый адресс";
+            _logger.LogInformation("Загрузка данных компании {CompanyINNOrBIN}", CompanyINNOrBIN);
+            var info = await _infoResolver.GetPartyInfo(SelectedOrgType, CompanyINNOrBIN);
+
+            CompanyName = info.Name;
+            CompanyAddress = info.Address;
             ContractNumber ??= "1";
             _logger.LogInformation("Данные компании загружены");
         }

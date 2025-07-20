@@ -45,7 +45,7 @@
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
                     Margin="0,5,10,5"
                     Width="200"
-                    Text="{Binding CompanyINN, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                    Text="{Binding CompanyINNOrBIN, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                 <Button Content="Загрузить данные"
                         Command="{Binding LoadCompanyDataCommand}"
                         Style="{StaticResource MaterialDesignOutlinedButton}"

@@ -4,5 +4,5 @@ namespace Infrastructure.Pdf.Interfaces;
 
 public interface IPdfGeneratorFactory
 {
-    IInvoicePdfGenerator GetGenerator(InvoiceType type);
+    IPdfGenerator GetGenerator(InvoiceType type);
 }

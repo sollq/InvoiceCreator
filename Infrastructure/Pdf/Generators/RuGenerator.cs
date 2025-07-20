@@ -4,8 +4,12 @@ using Infrastructure.Pdf.Interfaces;
 
 namespace Infrastructure.Pdf.Generators;
 
-public class RuInvoiceGenerator : IInvoicePdfGenerator
+public class RuGenerator : IPdfGenerator
 {
+    public bool CanHandle(InvoiceType type)
+    {
+        return type is InvoiceType.Ru;
+    }
     public byte[] Generate(InvoiceData data)
     {
         //var document = Document.Create(container =>

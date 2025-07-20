@@ -7,7 +7,7 @@ namespace Infrastructure.Integrations;
 
 public class InfoResolver(ICounterpartyDataFactory factory) : IInfoResolver
 {
-    public async Task<SupplierInfo> GetPartyInfo(InvoiceType type, string id)
+    public async Task<ClientInfo> GetPartyInfo(InvoiceType type, string id)
     {
         var generator = factory.GetDataStrategy(type);
         return await generator.GetData(id);

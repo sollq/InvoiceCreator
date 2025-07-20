@@ -4,5 +4,5 @@ namespace Core.Interfaces;
 
 public interface IInfoResolver
 {
-    public Task<SupplierInfo> GetPartyInfo(InvoiceType type, string id);
+    public Task<ClientInfo> GetPartyInfo(InvoiceType type, string id);
 }

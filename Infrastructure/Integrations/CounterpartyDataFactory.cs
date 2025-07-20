@@ -2,21 +2,16 @@
 using Infrastructure.Integrations.Interfaces;
 using Infrastructure.Pdf;
 using Microsoft.Extensions.DependencyInjection;
+using QuestPDF;
 
 namespace Infrastructure.Integrations;
 
-public class CounterpartyDataFactory(IServiceProvider provider) : ICounterpartyDataFactory
+public class CounterpartyDataFactory(IEnumerable<IPartyInfoStrategy> strategies) : ICounterpartyDataFactory
 {
-    private readonly Dictionary<InvoiceType, ICounterpartyDataStrategy> _strategies = new()
+    public IPartyInfoStrategy GetDataStrategy(InvoiceType type)
     {
-        { InvoiceType.Ru, provider.GetRequiredService<AdataStrategy>() },
-        { InvoiceType.RuAkt, provider.GetRequiredService<AdataStrategy>() },
-        { InvoiceType.Kz, provider.GetRequiredService<PkAdataStrategy>() },
-        { InvoiceType.KzAkt, provider.GetRequiredService<PkAdataStrategy>() }
-    };
-
-    public ICounterpartyDataStrategy GetDataStrategy(InvoiceType type)
-        => _strategies.TryGetValue(type, out var strategy)
-            ? strategy
-            : throw new NotSupportedException($"Strategy for {type} not found");
+        return strategies.FirstOrDefault(s => s.CanHandle(type))
+               ?? throw new NotSupportedException($"Подходящая для обработки движок - не найдена.");
+    }
 }
+

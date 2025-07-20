@@ -11,8 +11,12 @@ using QuestPDF.Drawing;
 
 namespace Infrastructure.Pdf.Generators;
 
-public class KzInvoicePdfGenerator : IInvoicePdfGenerator
+public class KzPdfGenerator : IPdfGenerator
 {
+    public bool CanHandle(InvoiceType type)
+    {
+        return type is InvoiceType.Kz;
+    }
     public byte[] Generate(InvoiceData data)
     {
         QuestPDF.Settings.License = LicenseType.Community;
@@ -105,7 +109,7 @@ public class KzInvoicePdfGenerator : IInvoicePdfGenerator
                     col.Item().Text(t =>
                     {
                         t.Span("Покупатель: ");
-                        t.Span($"ИНН/БИН: {data.Buyer.INN}, {data.Buyer.Name}").Bold();
+                        t.Span($"ИНН/БИН: {data.Buyer.INN}, {data.Buyer.Name}, Республика Казахстан, {data.Buyer.Address}").Bold();
                     });
                     col.Item().Text(t =>
                     {
@@ -158,19 +162,19 @@ public class KzInvoicePdfGenerator : IInvoicePdfGenerator
                     });
 
                     // --- Итоги и пропись ---
-                    col.Item().PaddingTop(10).AlignRight().Column(summary =>
+                    col.Item().PaddingTop(10).AlignRight().Table(table =>
                     {
-                        summary.Item().Row(row =>
+                        table.ColumnsDefinition(columns =>
                         {
-                            row.RelativeColumn().Text("Итого:").Bold();
-                            row.ConstantColumn(100).AlignRight().Text($"{data.TotalAmount:0.00}").Bold();
+                            columns.RelativeColumn(1); // Текст слева
+                            columns.RelativeColumn(0.7f); // Значение справа, фикс не поддерживается, делаем относительный вес
                         });
 
-                        summary.Item().Row(row =>
-                        {
-                            row.RelativeColumn().Text("В том числе НДС:").Bold();
-                            //row.ConstantColumn(100).AlignRight().Text(data.VatText ?? "(нет)").Bold();
-                        });
+                        // Итого
+                        table.Cell().Row(1).Column(2).Element(NoBorderCellStyle).AlignLeft().Text("Итого:").Bold();
+                        table.Cell().Row(1).Column(2).Element(NoBorderCellStyle).AlignRight().Text($"{data.TotalAmount:0.00}").Bold();
+
+                        table.Cell().Row(2).Column(2).Element(NoBorderCellStyle).AlignLeft().Text("В том числе НДС:").Bold();
                     });
 
                     col.Item().PaddingTop(10).Text($"Всего наименований {data.Products.Count}, на сумму {data.TotalAmount:### ### ##0.00} KZT").Bold();
@@ -190,5 +194,9 @@ public class KzInvoicePdfGenerator : IInvoicePdfGenerator
     private QuestPDF.Infrastructure.IContainer CellStyle(QuestPDF.Infrastructure.IContainer container)
     {
         return container.Border(0.5f).Padding(1).AlignMiddle().AlignCenter();
+    }
+    private QuestPDF.Infrastructure.IContainer NoBorderCellStyle(QuestPDF.Infrastructure.IContainer container)
+    {
+        return container.Border(0).Padding(1).AlignMiddle().AlignCenter();
     }
 }

@@ -17,19 +17,17 @@ public class ServiceRegistration : IServiceRegistration
     {
         services.AddSingleton<INumberToWordsConverter, NumberToWordsConverter>();
         services.AddSingleton<IInvoiceNumberCounterService, InvoiceNumberCounterService>();
-        services.AddScoped<KzInvoicePdfGenerator>();
-        services.AddScoped<RuInvoiceGenerator>();
-        services.AddScoped<RuAktGenerator>();
-        services.AddScoped<KzAktGenerator>();
+        services.AddScoped<IPdfGenerator, KzPdfGenerator>();
+        services.AddScoped<IPdfGenerator, RuGenerator>();
+        services.AddScoped<IPdfGenerator, RuAktGenerator>();
+        services.AddScoped<IPdfGenerator, KzAktGenerator>();
         services.AddScoped<IPdfGeneratorFactory, PdfGeneratorFactory>();
         services.AddSingleton<IMyCompanyInfoProvider, MyCompanyInfoProvider>();
         services.AddSingleton<ISaveService, SaveService>();
         services.AddTransient<IPdfOrchestrator, PdfOrchestrator>();
 
-
-
-        services.AddScoped<AdataStrategy>();
-        services.AddScoped<PkAdataStrategy>();
+        services.AddTransient<IPartyInfoStrategy, RuStrategy>();
+        services.AddTransient<IPartyInfoStrategy, KzStrategy>();
         services.AddScoped<ICounterpartyDataFactory, CounterpartyDataFactory>();
         services.AddTransient<IInfoResolver, InfoResolver>();
     }
