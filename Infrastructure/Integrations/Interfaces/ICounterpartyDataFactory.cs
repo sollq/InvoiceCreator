@@ -4,5 +4,5 @@ namespace Infrastructure.Integrations.Interfaces;
 
 public interface ICounterpartyDataFactory
 {
-    IPartyInfoStrategy GetDataStrategy(InvoiceType type);
+    IPartyInfoStrategy GetDataStrategy(DocumentType type);
 }

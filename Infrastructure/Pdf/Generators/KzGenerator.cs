@@ -8,14 +8,14 @@ using QuestPDF.Infrastructure;
 
 namespace Infrastructure.Pdf.Generators;
 
-public class KzPdfGenerator : IPdfGenerator
+public class KzGenerator : IPdfGenerator
 {
-    public bool CanHandle(InvoiceType type)
+    public bool CanHandle(DocumentType type)
     {
-        return type is InvoiceType.Kz;
+        return type is DocumentType.Kz;
     }
 
-    public byte[] Generate(InvoiceData data)
+    public byte[] Generate(DocumentData data)
     {
         Settings.License = LicenseType.Community;
         FontManager.RegisterFont(File.OpenRead("Fonts/times.ttf"));
@@ -108,7 +108,7 @@ public class KzPdfGenerator : IPdfGenerator
                     {
                         t.Span("Покупатель: ");
                         t.Span(
-                                $"ИНН/БИН: {data.Buyer.INN}, {data.Buyer.Name}, Республика Казахстан, {data.Buyer.Address}")
+                                $"ИНН/БИН: {data.Buyer.INN}, {data.Buyer.Name}, {data.Buyer.Address}")
                             .Bold();
                     });
                     col.Item().Text(t =>
@@ -185,7 +185,11 @@ public class KzPdfGenerator : IPdfGenerator
                     col.Item().Text($"Всего к оплате: {data.TotalAmountText}").Bold();
 
                     col.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Black);
-                    col.Item().Text("Исполнитель: ____________________________________ //").Bold();
+                    col.Item().Row(row =>
+                    {
+                        row.RelativeItem().Text("Исполнитель: _______________________________________//").Bold();
+                        row.ConstantItem(80).Image("Stamps/kz.png");
+                    });
                 });
             });
         });

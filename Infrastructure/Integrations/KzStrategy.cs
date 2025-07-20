@@ -37,8 +37,8 @@ public class KzStrategy : IPartyInfoStrategy
         return clientInfo;
     }
 
-    public bool CanHandle(InvoiceType type)
+    public bool CanHandle(DocumentType type)
     {
-        return type is InvoiceType.Kz or InvoiceType.KzAkt;
+        return type is DocumentType.Kz or DocumentType.KzAkt;
     }
 }

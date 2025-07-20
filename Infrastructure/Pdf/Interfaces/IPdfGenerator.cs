@@ -4,7 +4,7 @@ namespace Infrastructure.Pdf.Interfaces;
 
 public interface IPdfGenerator
 {
-    byte[] Generate(InvoiceData data);
+    byte[] Generate(DocumentData data);
 
-    bool CanHandle(InvoiceType type);
+    bool CanHandle(DocumentType type);
 }

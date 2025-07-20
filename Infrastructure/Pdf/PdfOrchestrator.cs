@@ -18,7 +18,7 @@ public class PdfOrchestrator(
     {
         var invoiceNumber = input.InvoiceNumber;
 
-        var invoiceData = new InvoiceData
+        var invoiceData = new DocumentData
         {
             InvoiceNumber = invoiceNumber,
             Date = input.ContractDate,

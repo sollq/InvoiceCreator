@@ -5,11 +5,11 @@ namespace Infrastructure.Services;
 
 public class MyCompanyInfoProvider : IMyCompanyInfoProvider
 {
-    public SupplierInfo GetInfo(InvoiceType type)
+    public SupplierInfo GetInfo(DocumentType type)
     {
         return type switch
         {
-            InvoiceType.Kz => new SupplierInfo
+            DocumentType.Kz => new SupplierInfo
             {
                 Name = "TOO \"Евраз-стандарт\"",
                 INN = "250140017474",
@@ -21,7 +21,7 @@ public class MyCompanyInfoProvider : IMyCompanyInfoProvider
                 Kbe = "17",
                 PaymentCode = "890"
             },
-            InvoiceType.Ru => new SupplierInfo
+            DocumentType.Ru => new SupplierInfo
             {
                 Name = "ООО \"Рога и Копыта\"",
                 INN = "7701234567",

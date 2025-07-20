@@ -39,10 +39,10 @@
                                     Binding="{Binding Unit}"
                                     Width="100" />
                 <DataGridTextColumn Header="Цена"
-                                    Binding="{Binding Price, StringFormat=C}"
+                                    Binding="{Binding Price}"
                                     Width="100" />
                 <DataGridTextColumn Header="Сумма"
-                                    Binding="{Binding Total, StringFormat=C}"
+                                    Binding="{Binding Total}"
                                     Width="100" />
             </DataGrid.Columns>
         </DataGrid>

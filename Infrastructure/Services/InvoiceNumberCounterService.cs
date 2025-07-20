@@ -11,7 +11,7 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
 
     private readonly object _lock = new();
 
-    public string SetNextNumber(InvoiceType org)
+    public string SetNextNumber(DocumentType org)
     {
         lock (_lock)
         {
@@ -19,13 +19,21 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
             int next;
             switch (org)
             {
-                case InvoiceType.Ru:
+                case DocumentType.Ru:
                     data.Ru++;
                     next = data.Ru;
                     break;
-                case InvoiceType.Kz:
+                case DocumentType.Kz:
                     data.Kz++;
                     next = data.Kz;
+                    break;
+                case DocumentType.KzAkt:
+                    data.KzAkt++;
+                    next = data.KzAkt;
+                    break;
+                case DocumentType.RuAkt:
+                    data.RuAkt++;
+                    next = data.RuAkt;
                     break;
                 default:
                     throw new ArgumentException("Unknown org type");
@@ -36,13 +44,15 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
         }
     }
 
-    public string GetNextNumber(InvoiceType org)
+    public string GetNextNumber(DocumentType org)
     {
         var data = Load();
         var next = org switch
         {
-            InvoiceType.Ru => data.Ru + 1,
-            InvoiceType.Kz => data.Kz + 1,
+            DocumentType.Ru => data.Ru + 1,
+            DocumentType.Kz => data.Kz + 1,
+            DocumentType.KzAkt => data.KzAkt + 1,
+            DocumentType.RuAkt => data.RuAkt + 1,
             _ => throw new ArgumentException("Unknown org type")
         };
         return $"{next}";
@@ -67,5 +77,7 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
     {
         public int Ru { get; set; }
         public int Kz { get; set; }
+        public int KzAkt { get; set; }
+        public int RuAkt { get; set; }
     }
 }

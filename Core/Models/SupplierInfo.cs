@@ -10,4 +10,6 @@ public class SupplierInfo
     public string? Kbe;
     public required string Name;
     public string? PaymentCode;
+    public string? KPP { get; set; }
+    public string? OGRN { get; set; }
 }

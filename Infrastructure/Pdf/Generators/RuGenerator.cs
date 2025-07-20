@@ -5,12 +5,12 @@ namespace Infrastructure.Pdf.Generators;
 
 public class RuGenerator : IPdfGenerator
 {
-    public bool CanHandle(InvoiceType type)
+    public bool CanHandle(DocumentType type)
     {
-        return type is InvoiceType.Ru;
+        return type is DocumentType.Ru;
     }
 
-    public byte[] Generate(InvoiceData data)
+    public byte[] Generate(DocumentData data)
     {
         //var document = Document.Create(container =>
         //{

@@ -17,7 +17,7 @@ public class ServiceRegistration : IServiceRegistration
     {
         services.AddSingleton<INumberToWordsConverter, NumberToWordsConverter>();
         services.AddSingleton<IInvoiceNumberCounterService, InvoiceNumberCounterService>();
-        services.AddScoped<IPdfGenerator, KzPdfGenerator>();
+        services.AddScoped<IPdfGenerator, KzGenerator>();
         services.AddScoped<IPdfGenerator, RuGenerator>();
         services.AddScoped<IPdfGenerator, RuAktGenerator>();
         services.AddScoped<IPdfGenerator, KzAktGenerator>();

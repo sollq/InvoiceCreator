@@ -2,7 +2,7 @@
 
 public class InvoiceInput
 {
-    public InvoiceType OrgType { get; set; }
+    public DocumentType OrgType { get; set; }
     public string CompanyINN { get; set; } = string.Empty;
     public string CompanyName { get; set; } = string.Empty;
     public string CompanyAddress { get; set; } = string.Empty;

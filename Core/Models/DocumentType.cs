@@ -1,6 +1,6 @@
 ﻿namespace Core.Models;
 
-public enum InvoiceType
+public enum DocumentType
 {
     Ru,
     Kz,

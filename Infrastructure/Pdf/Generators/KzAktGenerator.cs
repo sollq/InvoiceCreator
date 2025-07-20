@@ -5,13 +5,13 @@ namespace Infrastructure.Pdf.Generators;
 
 public class KzAktGenerator : IPdfGenerator
 {
-    public byte[] Generate(InvoiceData data)
+    public byte[] Generate(DocumentData data)
     {
         throw new NotImplementedException();
     }
 
-    public bool CanHandle(InvoiceType type)
+    public bool CanHandle(DocumentType type)
     {
-        return type is InvoiceType.KzAkt;
+        return type is DocumentType.KzAkt;
     }
 }

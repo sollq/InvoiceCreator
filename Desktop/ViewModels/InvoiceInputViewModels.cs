@@ -20,7 +20,7 @@ public class InvoiceInputViewModels : BaseViewModel
     private string? _invoiceNumber;
     private bool _isBusy;
 
-    private InvoiceType _selectedOrgType = InvoiceType.Ru;
+    private DocumentType _selectedOrgType = DocumentType.Ru;
 
     public InvoiceInputViewModels(
         ILogger<InvoiceInputViewModels> logger,
@@ -39,9 +39,9 @@ public class InvoiceInputViewModels : BaseViewModel
         UpdateNextInvoiceNumber();
     }
 
-    public Array OrganizationTypes { get; } = Enum.GetValues(typeof(InvoiceType));
+    public Array OrganizationTypes { get; } = Enum.GetValues(typeof(DocumentType));
 
-    public InvoiceType SelectedOrgType
+    public DocumentType SelectedOrgType
     {
         get => _selectedOrgType;
         set

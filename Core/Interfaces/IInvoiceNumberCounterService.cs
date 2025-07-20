@@ -4,6 +4,6 @@ namespace Core.Interfaces;
 
 public interface IInvoiceNumberCounterService
 {
-    string GetNextNumber(InvoiceType org);
-    string SetNextNumber(InvoiceType org);
+    string GetNextNumber(DocumentType org);
+    string SetNextNumber(DocumentType org);
 }
