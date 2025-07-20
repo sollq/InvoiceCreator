@@ -13,7 +13,8 @@ public class MyCompanyInfoProvider : IMyCompanyInfoProvider
             {
                 Name = "TOO \"Евраз-стандарт\"",
                 INN = "250140017474",
-                Address = "Республика Казахстан, Восточно-Казахстанская область, город Усть-Каменогорск, Проспект Абая, здание 181",
+                Address =
+                    "Республика Казахстан, Восточно-Казахстанская область, город Усть-Каменогорск, Проспект Абая, здание 181",
                 BankDetails = "АО \"Банк ЦентрКредит\"",
                 BankAccount = "KZ6785622031435537314",
                 BIK = "KCJBKZKX",
@@ -34,4 +35,4 @@ public class MyCompanyInfoProvider : IMyCompanyInfoProvider
             _ => throw new NotImplementedException()
         };
     }
-} 
+}

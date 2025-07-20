@@ -3,11 +3,11 @@
 public class SupplierInfo
 {
     public required string Address;
-    public required string BankDetails;
-    public string? INN;
-    public required string Name;
     public string? BankAccount;
+    public required string BankDetails;
     public string? BIK;
+    public string? INN;
     public string? Kbe;
+    public required string Name;
     public string? PaymentCode;
 }

@@ -1,8 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using Core.Interfaces;
-using Core.Models;
 
 namespace Desktop.ViewModels;
 
@@ -28,10 +25,10 @@ public class MainViewModel(
         {
             IsBusy = true;
             logger.LogInformation("Инициализация MainViewModel");
-            
+
             await InvoiceCreationVM.InitAsync();
             await ProductVM.InitAsync();
-            
+
             logger.LogInformation("MainViewModel успешно инициализирован");
         }
         catch (Exception ex)

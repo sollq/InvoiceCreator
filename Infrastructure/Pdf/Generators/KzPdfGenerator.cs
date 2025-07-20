@@ -1,13 +1,10 @@
-﻿using System.ComponentModel;
-using System.Reflection.Metadata;
+﻿using Core.Models;
+using Infrastructure.Pdf.Interfaces;
+using QuestPDF;
+using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using Core.Models;
-using Core.Interfaces;
-using Infrastructure.Pdf.Interfaces;
-using System.IO;
-using QuestPDF.Drawing;
 
 namespace Infrastructure.Pdf.Generators;
 
@@ -17,13 +14,14 @@ public class KzPdfGenerator : IPdfGenerator
     {
         return type is InvoiceType.Kz;
     }
+
     public byte[] Generate(InvoiceData data)
     {
-        QuestPDF.Settings.License = LicenseType.Community;
+        Settings.License = LicenseType.Community;
         FontManager.RegisterFont(File.OpenRead("Fonts/times.ttf"));
         FontManager.RegisterFont(File.OpenRead("Fonts/times_bold.ttf"));
 
-        var document = QuestPDF.Fluent.Document.Create(container =>
+        var document = Document.Create(container =>
         {
             container.Page(page =>
             {
@@ -109,7 +107,9 @@ public class KzPdfGenerator : IPdfGenerator
                     col.Item().Text(t =>
                     {
                         t.Span("Покупатель: ");
-                        t.Span($"ИНН/БИН: {data.Buyer.INN}, {data.Buyer.Name}, Республика Казахстан, {data.Buyer.Address}").Bold();
+                        t.Span(
+                                $"ИНН/БИН: {data.Buyer.INN}, {data.Buyer.Name}, Республика Казахстан, {data.Buyer.Address}")
+                            .Bold();
                     });
                     col.Item().Text(t =>
                     {
@@ -124,7 +124,7 @@ public class KzPdfGenerator : IPdfGenerator
                         {
                             columns.ConstantColumn(30); // №
                             columns.ConstantColumn(60); // Код
-                            columns.RelativeColumn(2);  // Наименование
+                            columns.RelativeColumn(2); // Наименование
                             columns.ConstantColumn(40); // Кол-во
                             columns.ConstantColumn(60); // Ед.
                             columns.ConstantColumn(70); // Цена
@@ -157,8 +157,6 @@ public class KzPdfGenerator : IPdfGenerator
                         }
 
                         // Итог
-
-
                     });
 
                     // --- Итоги и пропись ---
@@ -166,24 +164,28 @@ public class KzPdfGenerator : IPdfGenerator
                     {
                         table.ColumnsDefinition(columns =>
                         {
-                            columns.RelativeColumn(1); // Текст слева
-                            columns.RelativeColumn(0.7f); // Значение справа, фикс не поддерживается, делаем относительный вес
+                            columns.RelativeColumn(); // Текст слева
+                            columns.RelativeColumn(
+                                0.7f); // Значение справа, фикс не поддерживается, делаем относительный вес
                         });
 
                         // Итого
                         table.Cell().Row(1).Column(2).Element(NoBorderCellStyle).AlignLeft().Text("Итого:").Bold();
-                        table.Cell().Row(1).Column(2).Element(NoBorderCellStyle).AlignRight().Text($"{data.TotalAmount:0.00}").Bold();
+                        table.Cell().Row(1).Column(2).Element(NoBorderCellStyle).AlignRight()
+                            .Text($"{data.TotalAmount:0.00}").Bold();
 
-                        table.Cell().Row(2).Column(2).Element(NoBorderCellStyle).AlignLeft().Text("В том числе НДС:").Bold();
+                        table.Cell().Row(2).Column(2).Element(NoBorderCellStyle).AlignLeft().Text("В том числе НДС:")
+                            .Bold();
                     });
 
-                    col.Item().PaddingTop(10).Text($"Всего наименований {data.Products.Count}, на сумму {data.TotalAmount:### ### ##0.00} KZT").Bold();
+                    col.Item().PaddingTop(10)
+                        .Text(
+                            $"Всего наименований {data.Products.Count}, на сумму {data.TotalAmount:### ### ##0.00} KZT")
+                        .Bold();
                     col.Item().Text($"Всего к оплате: {data.TotalAmountText}").Bold();
-                    
+
                     col.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Black);
                     col.Item().Text("Исполнитель: ____________________________________ //").Bold();
-                    
-
                 });
             });
         });
@@ -191,11 +193,12 @@ public class KzPdfGenerator : IPdfGenerator
         return document.GeneratePdf();
     }
 
-    private QuestPDF.Infrastructure.IContainer CellStyle(QuestPDF.Infrastructure.IContainer container)
+    private IContainer CellStyle(IContainer container)
     {
         return container.Border(0.5f).Padding(1).AlignMiddle().AlignCenter();
     }
-    private QuestPDF.Infrastructure.IContainer NoBorderCellStyle(QuestPDF.Infrastructure.IContainer container)
+
+    private IContainer NoBorderCellStyle(IContainer container)
     {
         return container.Border(0).Padding(1).AlignMiddle().AlignCenter();
     }

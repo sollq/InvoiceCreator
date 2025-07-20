@@ -1,8 +1,6 @@
-﻿using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Core.Models;
 using Infrastructure.Integrations.Interfaces;
 
@@ -14,6 +12,7 @@ public class RuStrategy : IPartyInfoStrategy
     {
         return type is InvoiceType.Ru or InvoiceType.RuAkt;
     }
+
     public async Task<ClientInfo> GetData(string id)
     {
         var client = new HttpClient();
@@ -23,7 +22,8 @@ public class RuStrategy : IPartyInfoStrategy
         var requestBody = JsonSerializer.Serialize(new { query = id });
         var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
-        var response = await client.PostAsync("https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party", content);
+        var response = await client.PostAsync("https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party",
+            content);
         if (!response.IsSuccessStatusCode)
             return clientInfo;
 

@@ -1,5 +1,4 @@
-﻿using Core.Interfaces;
-using Core.Models;
+﻿using Core.Models;
 using Infrastructure.Pdf.Interfaces;
 
 namespace Infrastructure.Pdf.Generators;
@@ -10,6 +9,7 @@ public class RuGenerator : IPdfGenerator
     {
         return type is InvoiceType.Ru;
     }
+
     public byte[] Generate(InvoiceData data)
     {
         //var document = Document.Create(container =>

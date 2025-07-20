@@ -31,4 +31,4 @@ public class ServiceRegistration : IServiceRegistration
         services.AddScoped<ICounterpartyDataFactory, CounterpartyDataFactory>();
         services.AddTransient<IInfoResolver, InfoResolver>();
     }
-} 
+}

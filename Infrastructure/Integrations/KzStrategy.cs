@@ -1,15 +1,8 @@
-﻿using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using HtmlAgilityPack;
 using Core.Models;
 using Infrastructure.Integrations.Interfaces;
-using System.Linq;
-using System;
-using Dadata;
-using Dadata.Model;
 
 namespace Infrastructure.Integrations;
 
@@ -24,7 +17,8 @@ public class KzStrategy : IPartyInfoStrategy
         var requestBody = JsonSerializer.Serialize(new { query = bin });
         var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
-        var response = await client.PostAsync("https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party_kz", content);
+        var response = await client.PostAsync("https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party_kz",
+            content);
         if (!response.IsSuccessStatusCode)
             return clientInfo;
 
@@ -42,6 +36,7 @@ public class KzStrategy : IPartyInfoStrategy
 
         return clientInfo;
     }
+
     public bool CanHandle(InvoiceType type)
     {
         return type is InvoiceType.Kz or InvoiceType.KzAkt;

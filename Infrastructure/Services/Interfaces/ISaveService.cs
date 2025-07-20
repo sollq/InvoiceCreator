@@ -6,4 +6,4 @@ public interface ISaveService
 {
     string GetSavePath(string invoiceNumber, IConfiguration config);
     Task SaveAsync(string path, byte[] data);
-} 
+}

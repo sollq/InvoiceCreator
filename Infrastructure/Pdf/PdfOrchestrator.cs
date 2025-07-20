@@ -43,7 +43,7 @@ public class PdfOrchestrator(
         await saveService.SaveAsync(savePath, pdfBytes);
 
         counterService.SetNextNumber(input.OrgType);
-        
+
         return savePath;
     }
 }

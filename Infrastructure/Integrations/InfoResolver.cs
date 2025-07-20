@@ -1,7 +1,6 @@
 ﻿using Core.Interfaces;
 using Core.Models;
 using Infrastructure.Integrations.Interfaces;
-using Infrastructure.Pdf.Interfaces;
 
 namespace Infrastructure.Integrations;
 

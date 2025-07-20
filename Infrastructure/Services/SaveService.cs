@@ -1,4 +1,3 @@
-using Core.Interfaces;
 using Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 
@@ -18,4 +17,4 @@ public class SaveService : ISaveService
     {
         await File.WriteAllBytesAsync(path, data);
     }
-} 
+}

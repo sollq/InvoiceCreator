@@ -1,5 +1,4 @@
 using Core.Interfaces;
-using System.Globalization;
 
 namespace Infrastructure.Services;
 
@@ -25,17 +24,25 @@ public class NumberToWordsConverter : INumberToWordsConverter
                 return "минус " + ToWords(-number);
         }
 
-        string[] units = ["", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "десять", "одиннадцать", 
-            "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"];
-        string[] tens = ["", "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"];
-        string[] hundreds = ["", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"];
+        string[] units =
+        [
+            "", "один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять", "десять", "одиннадцать",
+            "двенадцать", "тринадцать", "четырнадцать", "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать",
+            "девятнадцать"
+        ];
+        string[] tens =
+        [
+            "", "", "двадцать", "тридцать", "сорок", "пятьдесят", "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
+        ];
+        string[] hundreds =
+            ["", "сто", "двести", "триста", "четыреста", "пятьсот", "шестьсот", "семьсот", "восемьсот", "девятьсот"];
         string[] thousands = ["", "тысяча", "миллион", "миллиард"];
 
         var parts = new List<string>();
-        int thousandGroup = 0;
+        var thousandGroup = 0;
         while (number > 0)
         {
-            int n = (int)(number % 1000);
+            var n = (int)(number % 1000);
             if (n != 0)
             {
                 var group = new List<string>();
@@ -48,18 +55,21 @@ public class NumberToWordsConverter : INumberToWordsConverter
                 {
                     if (n % 10 != 0)
                         group.Add(units[n % 10]);
-                    if ((n / 10) % 10 != 0)
-                        group.Add(tens[(n / 10) % 10]);
+                    if (n / 10 % 10 != 0)
+                        group.Add(tens[n / 10 % 10]);
                 }
-                if ((n / 100) % 10 != 0)
-                    group.Add(hundreds[(n / 100) % 10]);
+
+                if (n / 100 % 10 != 0)
+                    group.Add(hundreds[n / 100 % 10]);
                 if (thousandGroup > 0)
                     group.Add(thousands[thousandGroup]);
                 parts.Insert(0, string.Join(" ", group));
             }
+
             number /= 1000;
             thousandGroup++;
         }
+
         return string.Join(" ", parts);
     }
-} 
+}

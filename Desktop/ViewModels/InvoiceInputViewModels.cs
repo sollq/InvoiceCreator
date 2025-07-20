@@ -1,51 +1,32 @@
-﻿using Core.Interfaces;
+﻿using System.Runtime.CompilerServices;
+using Core.Interfaces;
 using Core.Models;
-using Infrastructure.Integrations;
-using Infrastructure.Integrations.Interfaces;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace Desktop.ViewModels;
 
 public class InvoiceInputViewModels : BaseViewModel
 {
-    private readonly ILogger<InvoiceInputViewModels> _logger;
     private readonly IInvoiceNumberCounterService _counterService;
-    private readonly IPdfOrchestrator _pdfOrchestrator;
     private readonly IInfoResolver _infoResolver;
-    public Array OrganizationTypes { get; } = Enum.GetValues(typeof(InvoiceType));
-
-    private InvoiceType _selectedOrgType = InvoiceType.Ru;
-    public InvoiceType SelectedOrgType
-    {
-        get => _selectedOrgType;
-        set
-        {
-            if (SetProperty(ref _selectedOrgType, value))
-            {
-                UpdateNextInvoiceNumber();
-            }
-        }
-    }
+    private readonly ILogger<InvoiceInputViewModels> _logger;
+    private readonly IPdfOrchestrator _pdfOrchestrator;
+    private string? _companyAddress;
 
     private string? _companyINNOrBin;
     private string? _companyName;
-    private string? _companyAddress;
+    private DateTime _contractDate = DateTime.Today;
     private string? _contractNumber;
     private string? _invoiceNumber;
-    private DateTime _contractDate = DateTime.Today;
     private bool _isBusy;
 
-    public AsyncRelayCommand CreateInvoiceCommand { get; }
-    public AsyncRelayCommand LoadCompanyDataCommand { get; }
-    public ProductViewModel ProductVM { get; }
+    private InvoiceType _selectedOrgType = InvoiceType.Ru;
 
     public InvoiceInputViewModels(
         ILogger<InvoiceInputViewModels> logger,
         ProductViewModel productViewModel,
-        IInvoiceNumberCounterService counterService, 
-        IPdfOrchestrator pdfOrchestrator, 
+        IInvoiceNumberCounterService counterService,
+        IPdfOrchestrator pdfOrchestrator,
         IInfoResolver infoResolver)
     {
         _pdfOrchestrator = pdfOrchestrator;
@@ -58,48 +39,60 @@ public class InvoiceInputViewModels : BaseViewModel
         UpdateNextInvoiceNumber();
     }
 
-    public string? CompanyINNOrBIN 
-    { 
-        get => _companyINNOrBin;
+    public Array OrganizationTypes { get; } = Enum.GetValues(typeof(InvoiceType));
+
+    public InvoiceType SelectedOrgType
+    {
+        get => _selectedOrgType;
         set
         {
-            if (SetProperty(ref _companyINNOrBin, value))
-            {
-                LoadCompanyDataCommand.RaiseCanExecuteChanged();
-            }
+            if (SetProperty(ref _selectedOrgType, value)) UpdateNextInvoiceNumber();
         }
     }
 
-    public string? CompanyName 
-    { 
+    public AsyncRelayCommand CreateInvoiceCommand { get; }
+    public AsyncRelayCommand LoadCompanyDataCommand { get; }
+    public ProductViewModel ProductVM { get; }
+
+    public string? CompanyINNOrBIN
+    {
+        get => _companyINNOrBin;
+        set
+        {
+            if (SetProperty(ref _companyINNOrBin, value)) LoadCompanyDataCommand.RaiseCanExecuteChanged();
+        }
+    }
+
+    public string? CompanyName
+    {
         get => _companyName;
         set => SetProperty(ref _companyName, value);
     }
+
     public string? CompanyAddress
     {
         get => _companyAddress;
         set => SetProperty(ref _companyAddress, value);
     }
+
     public string? InvoiceNumber
     {
         get => _invoiceNumber;
         set => SetProperty(ref _invoiceNumber, value);
     }
-    public string? ContractNumber 
-    { 
+
+    public string? ContractNumber
+    {
         get => _contractNumber;
         set => SetProperty(ref _contractNumber, value);
     }
 
-    public DateTime ContractDate 
-    { 
+    public DateTime ContractDate
+    {
         get => _contractDate;
         set
         {
-            if (SetProperty(ref _contractDate, value))
-            {
-                UpdateCommands();
-            }
+            if (SetProperty(ref _contractDate, value)) UpdateCommands();
         }
     }
 
@@ -116,7 +109,7 @@ public class InvoiceInputViewModels : BaseViewModel
 
     private void UpdateCommands()
     {
-        if (IsBusy) 
+        if (IsBusy)
             return;
         CreateInvoiceCommand.RaiseCanExecuteChanged();
         LoadCompanyDataCommand.RaiseCanExecuteChanged();
@@ -124,8 +117,8 @@ public class InvoiceInputViewModels : BaseViewModel
 
     private bool CanCreateInvoice()
     {
-        return !IsBusy && 
-               !string.IsNullOrWhiteSpace(CompanyINNOrBIN) && 
+        return !IsBusy &&
+               !string.IsNullOrWhiteSpace(CompanyINNOrBIN) &&
                !string.IsNullOrWhiteSpace(ContractNumber) &&
                ContractDate != default;
     }
@@ -152,8 +145,8 @@ public class InvoiceInputViewModels : BaseViewModel
                 Products = [.. ProductVM.Products]
             };
             var path = await _pdfOrchestrator.CreateInvoiceAsync(input);
-             _logger.LogInformation("Счет успешно создан и сохранен: {Path}", path);
-             UpdateNextInvoiceNumber();
+            _logger.LogInformation("Счет успешно создан и сохранен: {Path}", path);
+            UpdateNextInvoiceNumber();
         }
         catch (Exception ex)
         {
@@ -172,10 +165,7 @@ public class InvoiceInputViewModels : BaseViewModel
     {
         try
         {
-            if (CompanyINNOrBIN is null)
-            {
-                return;
-            }
+            if (CompanyINNOrBIN is null) return;
             IsBusy = true;
             _logger.LogInformation("Загрузка данных компании {CompanyINNOrBIN}", CompanyINNOrBIN);
             var info = await _infoResolver.GetPartyInfo(SelectedOrgType, CompanyINNOrBIN);

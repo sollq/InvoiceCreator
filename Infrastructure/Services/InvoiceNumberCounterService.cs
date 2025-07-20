@@ -1,19 +1,15 @@
 using System.Text.Json;
-using Core.Models;
 using Core.Interfaces;
+using Core.Models;
 
 namespace Infrastructure.Services;
 
 public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumberCounterService
 {
-    private readonly string _filePath = filePath ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "invoice_counters.json");
-    private readonly object _lock = new();
+    private readonly string _filePath =
+        filePath ?? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "invoice_counters.json");
 
-    private class CounterData
-    {
-        public int Ru { get; set; }
-        public int Kz { get; set; }
-    }
+    private readonly object _lock = new();
 
     public string SetNextNumber(InvoiceType org)
     {
@@ -34,6 +30,7 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
                 default:
                     throw new ArgumentException("Unknown org type");
             }
+
             Save(data);
             return $"{next}";
         }
@@ -65,4 +62,10 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
         var json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(_filePath, json);
     }
-} 
+
+    private class CounterData
+    {
+        public int Ru { get; set; }
+        public int Kz { get; set; }
+    }
+}

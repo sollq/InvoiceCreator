@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using Core.Interfaces;
 using Desktop.ViewModels;
+using Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -31,9 +32,9 @@ public partial class App : Application
         });
 
         services.AddSingleton<IConfiguration>(config);
-        services.AddSingleton<IConfigurationRoot>(config);
+        services.AddSingleton(config);
 
-        services.AddSingleton<IServiceRegistration, Infrastructure.ServiceRegistration>();
+        services.AddSingleton<IServiceRegistration, ServiceRegistration>();
 
         // Вызов регистрации инфраструктурных сервисов
         var serviceRegistration = services.BuildServiceProvider().GetRequiredService<IServiceRegistration>();

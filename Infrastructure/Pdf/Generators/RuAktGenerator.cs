@@ -9,6 +9,7 @@ public class RuAktGenerator : IPdfGenerator
     {
         return type is InvoiceType.RuAkt;
     }
+
     public byte[] Generate(InvoiceData data)
     {
         throw new NotImplementedException();
