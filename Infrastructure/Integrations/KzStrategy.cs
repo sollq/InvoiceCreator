@@ -25,14 +25,26 @@ public class KzStrategy : IPartyInfoStrategy
         var json = await response.Content.ReadAsStringAsync();
         using var doc = JsonDocument.Parse(json);
 
-        var suggestions = doc.RootElement.GetProperty("suggestions");
-        if (suggestions.GetArrayLength() == 0)
+        if (!doc.RootElement.TryGetProperty("suggestions", out var suggestions) || suggestions.GetArrayLength() == 0)
+        {
             return clientInfo;
+        }
 
-        var data = suggestions[0].GetProperty("data");
+        var firstSuggestion = suggestions[0];
+        if (!firstSuggestion.TryGetProperty("data", out var data))
+        {
+            return clientInfo;
+        }
 
-        clientInfo.Name = data.GetProperty("name_ru").GetString();
-        clientInfo.Address = data.GetProperty("address_ru").GetString();
+        if (data.TryGetProperty("name_ru", out var nameValue))
+        {
+            clientInfo.Name = nameValue.GetString() ?? string.Empty;
+        }
+
+        if (data.TryGetProperty("address_ru", out var addressValue))
+        {
+            clientInfo.Address = addressValue.GetString() ?? string.Empty;
+        }
 
         return clientInfo;
     }

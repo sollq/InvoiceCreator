@@ -30,15 +30,31 @@ public class RuStrategy : IPartyInfoStrategy
         var json = await response.Content.ReadAsStringAsync();
         using var doc = JsonDocument.Parse(json);
 
-        var suggestions = doc.RootElement.GetProperty("suggestions");
-        if (suggestions.GetArrayLength() == 0)
+        if (!doc.RootElement.TryGetProperty("suggestions", out var suggestions) || suggestions.GetArrayLength() == 0)
+        {
             return clientInfo;
+        }
 
-        var data = suggestions[0].GetProperty("data");
+        var firstSuggestion = suggestions[0];
+        if (!firstSuggestion.TryGetProperty("data", out var data))
+        {
+            return clientInfo;
+        }
 
-        clientInfo.Name = data.GetProperty("name").GetProperty("short_with_opf").GetString();
-        clientInfo.Address = data.GetProperty("address").GetProperty("value").GetString();
-        clientInfo.KPP = data.GetProperty("kpp").GetString();
+        if (data.TryGetProperty("name", out var nameElement) && nameElement.TryGetProperty("short_with_opf", out var nameValue))
+        {
+            clientInfo.Name = nameValue.GetString() ?? string.Empty;
+        }
+
+        if (data.TryGetProperty("address", out var addressElement) && addressElement.TryGetProperty("value", out var addressValue))
+        {
+            clientInfo.Address = addressValue.GetString() ?? string.Empty;
+        }
+
+        if (data.TryGetProperty("kpp", out var kppValue))
+        {
+            clientInfo.KPP = kppValue.GetString() ?? string.Empty;
+        }
 
         return clientInfo;
     }

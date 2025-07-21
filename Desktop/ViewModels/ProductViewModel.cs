@@ -84,7 +84,7 @@ public class ProductViewModel : BaseViewModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Ошибка при инициализации ProductViewModel");
-            throw;
+            // Больше не бросаем исключение
         }
         finally
         {
@@ -114,7 +114,7 @@ public class ProductViewModel : BaseViewModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Ошибка при добавлении продукта");
-            throw;
+            // Больше не бросаем исключение
         }
         finally
         {
@@ -154,7 +154,7 @@ public class ProductViewModel : BaseViewModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Ошибка при редактировании продукта {ProductName}", product.Name);
-            throw;
+            // Больше не бросаем исключение
         }
         finally
         {
@@ -184,7 +184,7 @@ public class ProductViewModel : BaseViewModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Ошибка при удалении продукта {ProductName}", product.Name);
-            throw;
+            // Больше не бросаем исключение
         }
         finally
         {

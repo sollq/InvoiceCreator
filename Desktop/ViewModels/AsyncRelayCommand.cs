@@ -1,4 +1,7 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 
 namespace Desktop.ViewModels;
@@ -35,7 +38,9 @@ public class AsyncRelayCommand(
         catch (Exception ex)
         {
             logger?.LogError(ex, "Ошибка при выполнении команды с параметром: {Parameter}", parameter);
-            throw;
+            // Показываем ошибку пользователю, не давая приложению упасть.
+            MessageBox.Show($"Произошла ошибка:\n{ex.Message}", "Ошибка выполнения", MessageBoxButton.OK, MessageBoxImage.Error);
+            // НЕ пробрасываем исключение дальше.
         }
         finally
         {

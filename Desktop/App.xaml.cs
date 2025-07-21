@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Threading;
 using Core.Interfaces;
 using Desktop.ViewModels;
 using Desktop.Views;
@@ -15,9 +16,14 @@ namespace Desktop;
 public partial class App : Application
 {
     private ServiceProvider? _serviceProvider;
+    private ILogger? _logger;
 
     protected override void OnStartup(StartupEventArgs e)
     {
+        base.OnStartup(e);
+
+        DispatcherUnhandledException += App_DispatcherUnhandledException;
+
         var config = new ConfigurationBuilder()
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json", true)
@@ -75,5 +81,25 @@ public partial class App : Application
     {
         _serviceProvider?.Dispose();
         base.OnExit(e);
+    }
+
+    private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        // Предотвращаем падение приложения
+        e.Handled = true;
+
+        var exception = e.Exception;
+        _logger?.LogError(exception, "Произошла необработанная ошибка");
+        
+        // Показываем пользователю сообщение об ошибке
+        MessageBox.Show($"Произошла критическая ошибка. Приложение продолжит работу, но некоторые функции могут быть недоступны.\n\nОшибка: {exception.Message}", 
+                        "Критическая ошибка", 
+                        MessageBoxButton.OK, 
+                        MessageBoxImage.Error);
+    }
+    
+    public void SetLogger(ILogger logger)
+    {
+        _logger = logger;
     }
 }

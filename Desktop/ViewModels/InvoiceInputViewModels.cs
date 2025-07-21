@@ -157,7 +157,6 @@ public class InvoiceInputViewModels : BaseViewModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Ошибка при создании счета");
-            throw;
         }
         finally
         {
@@ -185,7 +184,6 @@ public class InvoiceInputViewModels : BaseViewModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Ошибка при загрузке данных компании");
-            throw;
         }
         finally
         {
