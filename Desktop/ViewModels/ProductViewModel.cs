@@ -2,6 +2,10 @@
 using System.Runtime.CompilerServices;
 using Core.Models;
 using Microsoft.Extensions.Logging;
+using Desktop.Views;
+using System.Windows;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Desktop.ViewModels;
 
@@ -96,21 +100,16 @@ public class ProductViewModel : BaseViewModel
             IsBusy = true;
             _logger.LogInformation("Добавление нового продукта");
 
-            // TODO: Открыть диалог добавления продукта
-            var newProduct = new Product
+            var vm = new ProductDialogViewModel();
+            var result = ProductDialog.ShowDialog(Application.Current.MainWindow, vm);
+            if (result.IsOk && result.Product != null)
             {
-                Id = Products.Count + 1,
-                Name = "Оказание услуг по\r\n организации \r\nвыпуска \r\nдекларации по 435\r\n решению на \r\nпартию",
-                Quantity = 4,
-                Code = "123",
-                Unit = "одна",
-                Price = 1000
-            };
-
-            Products.Add(newProduct);
-            SelectedProduct = newProduct;
-
-            _logger.LogInformation("Продукт добавлен: {ProductName}", newProduct.Name);
+                // Генерируем Id (можно заменить на свою логику)
+                result.Product.Id = Products.Count > 0 ? Products.Max(p => p.Id) + 1 : 1;
+                Products.Add(result.Product);
+                SelectedProduct = result.Product;
+                _logger.LogInformation("Продукт добавлен: {ProductName}", result.Product.Name);
+            }
         }
         catch (Exception ex)
         {
@@ -135,10 +134,22 @@ public class ProductViewModel : BaseViewModel
             IsBusy = true;
             _logger.LogInformation("Редактирование продукта: {ProductName}", product.Name);
 
-            // TODO: Открыть диалог редактирования продукта
-            await Task.Delay(100); // Имитация работы
-
-            _logger.LogInformation("Продукт отредактирован: {ProductName}", product.Name);
+            var vm = new ProductDialogViewModel();
+            vm.LoadFromProduct(product);
+            var result = ProductDialog.ShowDialog(Application.Current.MainWindow, vm);
+            if (result.IsOk && result.Product != null)
+            {
+                // Обновляем свойства выбранного продукта
+                product.Name = result.Product.Name;
+                product.Quantity = result.Product.Quantity;
+                product.Price = result.Product.Price;
+                product.Code = result.Product.Code;
+                product.Unit = result.Product.Unit;
+                // Обновляем SelectedProduct, чтобы UI обновился
+                SelectedProduct = null;
+                SelectedProduct = product;
+                _logger.LogInformation("Продукт отредактирован: {ProductName}", product.Name);
+            }
         }
         catch (Exception ex)
         {
