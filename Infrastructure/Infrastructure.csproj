@@ -30,6 +30,9 @@
     <None Update="Fonts\times_bold.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Stamps\handwr.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Stamps\kz.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

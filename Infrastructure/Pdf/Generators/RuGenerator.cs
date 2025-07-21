@@ -46,26 +46,26 @@ public class RuGenerator : IPdfGenerator
                             {
                                 table.ColumnsDefinition(columns =>
                                 {
-                                    columns.ConstantColumn(100);
+                                    columns.ConstantColumn(140);
                                     columns.RelativeColumn();
                                 });
 
-                                AddRow("Получатель", "");
-                                AddRow("ООО \"НОРДСИС\"", "Сч. № 40702810300100216376");
-                                AddRow("Банк получателя", "БИК 044525801");
-                                AddRow("ООО\"Бланк банк\"", "Сч. № 30101810465250000801");
-                                AddRow("ИНН 5420275654", "КПП 542001001");
+                                AddRow("Получатель", "ООО \"НОРДСИС\"");
+                                AddRow("Счёт получателя", "40702810300100216376");
+                                AddRow("Банк получателя", "ООО \"Бланк банк\"");
+                                AddRow("БИК банка", "044525801");
+                                AddRow("Корр. счёт банка", "30101810465250000801");
+                                AddRow("ИНН", "5420275654");
+                                AddRow("КПП", "542001001");
                                 AddRow("Назначение платежа", $"оплата услуг по договору № НС/{data.ContractNumber}/25");
-                                return;
 
                                 void AddRow(string left, string right)
                                 {
-                                    table.Cell().Border(1).Padding(2).Text(left).FontSize(10);
-                                    table.Cell().Border(1).Padding(2).Text(right).FontSize(10);
+                                    table.Cell().Element(RequisiteCellStyle).Text(left).FontSize(10).AlignLeft();
+                                    table.Cell().Element(RequisiteCellStyle).Text(right).FontSize(10).AlignLeft();
                                 }
                             });
                         });
-
                         // QR-код
                         row.RelativeItem().AlignRight().AlignBottom().Column(c =>
                         {
@@ -103,8 +103,8 @@ public class RuGenerator : IPdfGenerator
                             columns.ConstantColumn(40);
                             columns.ConstantColumn(45);
                             columns.ConstantColumn(60);
-                            columns.ConstantColumn(50);
-                            columns.ConstantColumn(50);
+                            columns.ConstantColumn(60);
+                            columns.ConstantColumn(60);
                         });
 
                         table.Header(header =>
@@ -124,9 +124,9 @@ public class RuGenerator : IPdfGenerator
                             table.Cell().Element(CellStyle).Text(p.Name);
                             table.Cell().Element(CellStyle).Text(p.Quantity.ToString()).AlignCenter();
                             table.Cell().Element(CellStyle).Text(p.Unit ?? "").AlignCenter();
-                            table.Cell().Element(CellStyle).Text($"{p.Price:### ### ##0.00}").AlignRight();
+                            table.Cell().Element(CellStyle).Text($"{p.Price:### ### ##0.00}").AlignCenter();
                             table.Cell().Element(CellStyle).Text("Без НДС").Bold().AlignCenter();
-                            table.Cell().Element(CellStyle).Text($"{p.Total:### ### ##0.00}").AlignRight();
+                            table.Cell().Element(CellStyle).Text($"{p.Total:### ### ##0.00}").AlignCenter();
                         }
 
                         // Footer итоги
@@ -139,7 +139,7 @@ public class RuGenerator : IPdfGenerator
 
                     // --- Сумма прописью и финальный текст ---
                     col.Item().PaddingTop(15).Text(
-                        $"Всего наименований {i}, на сумму {data.TotalAmount:### ### ##0.00} руб. ");
+                        $"Всего наименований {i-=1}, на сумму {data.TotalAmount:### ### ##0.00} руб. ");
 
                     //Первую букву - с большой
                     if (data.TotalAmountText != null)
@@ -149,16 +149,17 @@ public class RuGenerator : IPdfGenerator
                     // --- Подписи ---
                     col.Item().PaddingTop(40).Row(row =>
                     {
-                        row.RelativeItem().Text($"Руководитель:                                                                  Загороднюк К.Е.").Bold();
+                        row.RelativeItem().Text($"Руководитель:").Bold();
+                        row.ConstantItem(150).AlignCenter().Image("Stamps/handwr.png");
+                        row.RelativeItem().Text("Загороднюк К.Е.").Bold();
                         row.ConstantItem(130).AlignCenter().Image("Stamps/Ru.png");
                     });
                 });
             });
         });
-
+            
         return document.GeneratePdf();
     }
-
     private IContainer CellStyle(IContainer container)
     {
         return container.Border(1).Padding(2).AlignMiddle().AlignCenter();
@@ -166,6 +167,10 @@ public class RuGenerator : IPdfGenerator
     private IContainer NoBorderCellStyle(IContainer container)
     {
         return container.Border(0).Padding(1).AlignMiddle().AlignCenter();
+    }
+    private IContainer RequisiteCellStyle(IContainer container)
+    {
+        return container.Border(1).Padding(2).AlignMiddle().AlignLeft();
     }
     private static readonly Dictionary<int, string> RussianMonthGenitive = new()
     {

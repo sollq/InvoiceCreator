@@ -14,7 +14,7 @@ public class KzStrategy : IPartyInfoStrategy
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         client.DefaultRequestHeaders.Add("Authorization", "Token 325ebcc995e0d94ce16cd71441de26bd5bdb7561");
         var clientInfo = new ClientInfo();
-        var requestBody = JsonSerializer.Serialize(new { query = bin });
+        var requestBody = JsonSerializer.Serialize(new { query = bin.Trim() });
         var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
         var response = await client.PostAsync("https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party_kz",
