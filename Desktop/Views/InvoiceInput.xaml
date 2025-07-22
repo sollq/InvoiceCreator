@@ -60,7 +60,7 @@
                     Width="200"
                     Text="{Binding ContractNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
                 <DatePicker
-                    materialDesign:HintAssist.Hint="Дата договора"
+                    materialDesign:HintAssist.Hint="Дата счета"
                     Style="{StaticResource MaterialDesignOutlinedDatePicker}"
                     Margin="0,5,10,5"
                     Width="200"
@@ -69,10 +69,12 @@
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
                 <TextBox
-                    materialDesign:HintAssist.Hint="Наименование компании"
+                    materialDesign:HintAssist.Hint="Наименование компании" 
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
                     Margin="0,5,10,5"
                     Width="400"
+                    AcceptsReturn="True"
+                    TextWrapping="Wrap"
                     Text="{Binding CompanyName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
@@ -81,6 +83,8 @@
                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
                     Margin="0,5,10,5"
                     Width="400"
+                    AcceptsReturn="True"
+                    TextWrapping="Wrap"
                     Text="{Binding CompanyAddress, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
             </StackPanel>
 

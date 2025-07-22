@@ -102,7 +102,7 @@ public class ProductViewModel : BaseViewModel
 
             var vm = new ProductDialogViewModel();
             var result = ProductDialog.ShowDialog(Application.Current.MainWindow, vm);
-            if (result.IsOk && result.Product != null)
+            if (result is { IsOk: true, Product: not null })
             {
                 // Генерируем Id (можно заменить на свою логику)
                 result.Product.Id = Products.Count > 0 ? Products.Max(p => p.Id) + 1 : 1;
@@ -137,23 +137,53 @@ public class ProductViewModel : BaseViewModel
             var vm = new ProductDialogViewModel();
             vm.LoadFromProduct(product);
             var result = ProductDialog.ShowDialog(Application.Current.MainWindow, vm);
-            if (result.IsOk && result.Product != null)
+            if (result is { IsOk: true, Product: not null })
             {
-                // Обновляем свойства выбранного продукта
-                product.Name = result.Product.Name;
-                product.Quantity = result.Product.Quantity;
-                product.Price = result.Product.Price;
-                product.Code = result.Product.Code;
-                product.Unit = result.Product.Unit;
-                // Обновляем SelectedProduct, чтобы UI обновился
-                SelectedProduct = null;
-                SelectedProduct = product;
-                _logger.LogInformation("Продукт отредактирован: {ProductName}", product.Name);
+                // Вот тут твоя проблема: ты напрямую меняешь свойства объекта Product,
+                // но если твой ObservableCollection<Product> не знает, что объект внутри изменился,
+                // и Product не реализует INotifyPropertyChanged — UI просто не узнает об изменениях.
+                // Это классика жанра, и ты в неё вляпался.
+
+                // Если Product реализует INotifyPropertyChanged — убедись, что сеттеры вызывают OnPropertyChanged.
+                // Если нет — UI не обновится, хоть ты тресни.
+
+                // Грязный, но рабочий хак: полностью заменить объект в коллекции, чтобы триггернуть обновление.
+                // Это не оптимально, но хотя бы честно работает.
+
+                int index = Products.IndexOf(product);
+                if (index >= 0)
+                {
+                    var updatedProduct = new Product
+                    {
+                        Id = product.Id,
+                        Name = result.Product.Name,
+                        Quantity = result.Product.Quantity,
+                        Price = result.Product.Price,
+                        Code = result.Product.Code,
+                        Unit = result.Product.Unit
+                    };
+                    Products[index] = updatedProduct;
+                    SelectedProduct = null;
+                    SelectedProduct = updatedProduct;
+                }
+                else
+                {
+                    // Если по какой-то причине не нашли — fallback на старую логику (но это уже костыль)
+                    product.Name = result.Product.Name;
+                    product.Quantity = result.Product.Quantity;
+                    product.Price = result.Product.Price;
+                    product.Code = result.Product.Code;
+                    product.Unit = result.Product.Unit;
+                    SelectedProduct = null;
+                    SelectedProduct = product;
+                }
+
+                _logger.LogInformation("Продукт отредактирован: {ProductName}", result.Product.Name);
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при редактировании продукта {ProductName}", product.Name);
+            _logger.LogError(ex, "Ошибка при редактировании продукта {ProductName}", product?.Name);
             // Больше не бросаем исключение
         }
         finally

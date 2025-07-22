@@ -83,13 +83,13 @@ public class RuGenerator : IPdfGenerator
                     col.Item().PaddingTop(10).Text(t =>
                     {
                         t.Span("Поставщик: ").Bold();
-                        t.Span($"{data.Buyer.Name}");
+                        t.Span($"{data.Seller.Name}");
                     });
 
                     col.Item().Text(t =>
                     {
                         t.Span("Покупатель: ").Bold();
-                        t.Span($"{data.Seller.Name}, ИНН: {data.Seller.INN}, КПП: {data.Seller.KPP}");
+                        t.Span($"{data.Buyer.Name}, ИНН: {data.Buyer.INN}, КПП: {data.Buyer.KPP}");
                     });
 
                     var i = 1;

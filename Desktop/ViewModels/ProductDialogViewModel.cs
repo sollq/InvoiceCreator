@@ -17,7 +17,12 @@ public class ProductDialogViewModel : BaseViewModel
     public string Name
     {
         get => _name;
-        set { _name = value; OnPropertyChanged(); OkCommand.RaiseCanExecuteChanged(); }
+        set
+        {
+            _name = value;
+            OnPropertyChanged();
+            OkCommand.RaiseCanExecuteChanged();
+        }
     }
 
     public int Quantity
