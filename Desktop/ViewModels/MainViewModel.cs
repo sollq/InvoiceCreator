@@ -26,8 +26,8 @@ public class MainViewModel(
             IsBusy = true;
             logger.LogInformation("Инициализация MainViewModel");
 
-            await InvoiceCreationVM.InitAsync();
             await ProductVM.InitAsync();
+            await InvoiceCreationVM.InitAsync();
 
             logger.LogInformation("MainViewModel успешно инициализирован");
         }

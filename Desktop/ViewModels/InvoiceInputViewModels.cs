@@ -148,7 +148,7 @@ public class InvoiceInputViewModels : BaseViewModel
                 ContractNumber = ContractNumber ?? string.Empty,
                 CompanyKPP = CompanyKPP ?? string.Empty,
                 ContractDate = ContractDate,
-                Products = [.. ProductVM.Products]
+                Products = [.. ProductVM.Products.Where(p => p.IsUsed)]
             };
             var path = await _pdfOrchestrator.CreateInvoiceAsync(input);
             _logger.LogInformation("Счет успешно создан и сохранен: {Path}", path);

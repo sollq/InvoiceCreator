@@ -6,25 +6,52 @@ using Desktop.Views;
 using System.Windows;
 using System.Collections.Generic;
 using System.Linq;
+using Core.Interfaces;
 
 namespace Desktop.ViewModels;
 
 public class ProductViewModel : BaseViewModel
 {
     private readonly ILogger<ProductViewModel> _logger;
+    private readonly IProductStorageService _productStorage;
     private bool _isBusy;
+    private bool? _allProductsSelected = true;
 
     private Product? _selectedProduct;
 
-    public ProductViewModel(ILogger<ProductViewModel> logger)
+    public ProductViewModel(ILogger<ProductViewModel> logger, IProductStorageService productStorage)
     {
         _logger = logger;
+        _productStorage = productStorage;
         AddCommand = new AsyncRelayCommand(async _ => await Add(), _ => CanAdd());
         EditCommand = new AsyncRelayCommand(async c => await Edit(c as Product), _ => CanEdit());
         DeleteCommand = new AsyncRelayCommand(async c => await Delete(c as Product), _ => CanDelete());
+
+        Products.CollectionChanged += async (s, e) => await OnProductsChanged();
     }
 
     public ObservableCollection<Product> Products { get; set; } = [];
+
+    public decimal TotalAmount => Products.Where(p => p.IsUsed).Sum(p => p.Total);
+
+    public bool? AllProductsSelected
+    {
+        get => _allProductsSelected;
+        set
+        {
+            if (SetProperty(ref _allProductsSelected, value))
+            {
+                if (value.HasValue)
+                {
+                    foreach (var product in Products)
+                    {
+                        product.IsUsed = value.Value;
+                    }
+                    OnPropertyChanged(nameof(TotalAmount));
+                }
+            }
+        }
+    }
 
     public AsyncRelayCommand AddCommand { get; }
     public AsyncRelayCommand EditCommand { get; }
@@ -78,8 +105,15 @@ public class ProductViewModel : BaseViewModel
             IsBusy = true;
             _logger.LogInformation("Инициализация ProductViewModel");
 
-            // TODO: Загрузка существующих продуктов
-            await Task.CompletedTask;
+            var loadedProducts = await _productStorage.LoadProductsAsync();
+            Products.Clear();
+            foreach (var product in loadedProducts)
+            {
+                product.PropertyChanged += async (s, e) => await OnProductsChanged();
+                Products.Add(product);
+            }
+
+            OnPropertyChanged(nameof(TotalAmount));
         }
         catch (Exception ex)
         {
@@ -104,8 +138,8 @@ public class ProductViewModel : BaseViewModel
             var result = ProductDialog.ShowDialog(Application.Current.MainWindow, vm);
             if (result is { IsOk: true, Product: not null })
             {
-                // Генерируем Id (можно заменить на свою логику)
                 result.Product.Id = Products.Count > 0 ? Products.Max(p => p.Id) + 1 : 1;
+                result.Product.PropertyChanged += async (s, e) => await OnProductsChanged();
                 Products.Add(result.Product);
                 SelectedProduct = result.Product;
                 _logger.LogInformation("Продукт добавлен: {ProductName}", result.Product.Name);
@@ -120,7 +154,7 @@ public class ProductViewModel : BaseViewModel
         {
             IsBusy = false;
             UpdateCommands();
-            await Task.CompletedTask;
+            await OnProductsChanged();
         }
     }
 
@@ -139,46 +173,15 @@ public class ProductViewModel : BaseViewModel
             var result = ProductDialog.ShowDialog(Application.Current.MainWindow, vm);
             if (result is { IsOk: true, Product: not null })
             {
-                // Вот тут твоя проблема: ты напрямую меняешь свойства объекта Product,
-                // но если твой ObservableCollection<Product> не знает, что объект внутри изменился,
-                // и Product не реализует INotifyPropertyChanged — UI просто не узнает об изменениях.
-                // Это классика жанра, и ты в неё вляпался.
-
-                // Если Product реализует INotifyPropertyChanged — убедись, что сеттеры вызывают OnPropertyChanged.
-                // Если нет — UI не обновится, хоть ты тресни.
-
-                // Грязный, но рабочий хак: полностью заменить объект в коллекции, чтобы триггернуть обновление.
-                // Это не оптимально, но хотя бы честно работает.
-
-                int index = Products.IndexOf(product);
-                if (index >= 0)
-                {
-                    var updatedProduct = new Product
-                    {
-                        Id = product.Id,
-                        Name = result.Product.Name,
-                        Quantity = result.Product.Quantity,
-                        Price = result.Product.Price,
-                        Code = result.Product.Code,
-                        Unit = result.Product.Unit
-                    };
-                    Products[index] = updatedProduct;
-                    SelectedProduct = null;
-                    SelectedProduct = updatedProduct;
-                }
-                else
-                {
-                    // Если по какой-то причине не нашли — fallback на старую логику (но это уже костыль)
-                    product.Name = result.Product.Name;
-                    product.Quantity = result.Product.Quantity;
-                    product.Price = result.Product.Price;
-                    product.Code = result.Product.Code;
-                    product.Unit = result.Product.Unit;
-                    SelectedProduct = null;
-                    SelectedProduct = product;
-                }
+                product.Name = result.Product.Name;
+                product.Quantity = result.Product.Quantity;
+                product.Price = result.Product.Price;
+                product.Code = result.Product.Code;
+                product.Unit = result.Product.Unit;
 
                 _logger.LogInformation("Продукт отредактирован: {ProductName}", result.Product.Name);
+                OnPropertyChanged(nameof(TotalAmount));
+                await OnProductsChanged();
             }
         }
         catch (Exception ex)
@@ -203,13 +206,14 @@ public class ProductViewModel : BaseViewModel
             IsBusy = true;
             _logger.LogInformation("Удаление продукта: {ProductName}", product.Name);
 
-            // TODO: Подтверждение удаления
+            product.PropertyChanged -= async (s, e) => await OnProductsChanged();
             Products.Remove(product);
 
             if (SelectedProduct == product)
                 SelectedProduct = null;
 
             _logger.LogInformation("Продукт удален: {ProductName}", product.Name);
+            OnPropertyChanged(nameof(TotalAmount));
         }
         catch (Exception ex)
         {
@@ -220,8 +224,14 @@ public class ProductViewModel : BaseViewModel
         {
             IsBusy = false;
             UpdateCommands();
-            await Task.CompletedTask;
+            await OnProductsChanged();
         }
+    }
+
+    private async Task OnProductsChanged()
+    {
+        OnPropertyChanged(nameof(TotalAmount));
+        await _productStorage.SaveProductsAsync(Products);
     }
 
     protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)

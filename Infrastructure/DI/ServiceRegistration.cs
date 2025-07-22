@@ -9,7 +9,7 @@ using Infrastructure.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Infrastructure;
+namespace Infrastructure.DI;
 
 public class ServiceRegistration : IServiceRegistration
 {
@@ -30,5 +30,6 @@ public class ServiceRegistration : IServiceRegistration
         services.AddTransient<IPartyInfoStrategy, KzStrategy>();
         services.AddScoped<ICounterpartyDataFactory, CounterpartyDataFactory>();
         services.AddTransient<IInfoResolver, InfoResolver>();
+        services.AddSingleton<IProductStorageService, ProductStorageService>();
     }
 }

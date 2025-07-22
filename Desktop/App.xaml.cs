@@ -3,7 +3,7 @@ using System.Windows.Threading;
 using Core.Interfaces;
 using Desktop.ViewModels;
 using Desktop.Views;
-using Infrastructure;
+using Infrastructure.DI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -48,7 +48,7 @@ public partial class App : Application
         serviceRegistration.ConfigureServices(services, config);
 
         // Регистрация ViewModels
-        services.AddTransient<ProductViewModel>();
+        services.AddSingleton<ProductViewModel>();
         services.AddTransient<InvoiceInputViewModels>();
         services.AddTransient<MainViewModel>();
         services.AddTransient<MainWindow>();

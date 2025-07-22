@@ -20,9 +20,18 @@
                   Style="{StaticResource MaterialDesignDataGrid}"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
-                  IsReadOnly="True"
                   Height="200">
             <DataGrid.Columns>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.Header>
+                        <CheckBox IsChecked="{Binding DataContext.AllProductsSelected, RelativeSource={RelativeSource AncestorType=DataGrid}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsUsed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="№"
                                     Binding="{Binding Id}"
                                     Width="100" />
