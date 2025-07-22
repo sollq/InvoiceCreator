@@ -34,25 +34,32 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="№"
                                     Binding="{Binding Id}"
-                                    Width="100" />
+                                    Width="100" 
+                                    IsReadOnly="True"/>
                 <DataGridTextColumn Header="Код"
                                     Binding="{Binding Code}"
-                                    Width="100" />
+                                    Width="100" 
+                                    IsReadOnly="True"/>
                 <DataGridTextColumn Header="Наименование"
                                     Binding="{Binding Name}"
-                                    Width="*" />
+                                    Width="*" 
+                                    IsReadOnly="True"/>
                 <DataGridTextColumn Header="Кол-во"
                                     Binding="{Binding Quantity}"
-                                    Width="100" />
+                                    Width="100" 
+                                    IsReadOnly="True"/>
                 <DataGridTextColumn Header="Ед."
                                     Binding="{Binding Unit}"
-                                    Width="100" />
+                                    Width="100" 
+                                    IsReadOnly="True"/>
                 <DataGridTextColumn Header="Цена"
                                     Binding="{Binding Price}"
-                                    Width="100" />
+                                    Width="100" 
+                                    IsReadOnly="True"/>
                 <DataGridTextColumn Header="Сумма"
                                     Binding="{Binding Total}"
-                                    Width="100" />
+                                    Width="100" 
+                                    IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
 
