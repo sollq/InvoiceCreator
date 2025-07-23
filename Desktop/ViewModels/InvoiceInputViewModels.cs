@@ -152,6 +152,7 @@ public class InvoiceInputViewModels : BaseViewModel
             };
             var path = await _pdfOrchestrator.CreateInvoiceAsync(input);
             _logger.LogInformation("Счет успешно создан и сохранен: {Path}", path);
+            System.Windows.MessageBox.Show("Готово", "Документ", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
             UpdateNextInvoiceNumber();
         }
         catch (Exception ex)

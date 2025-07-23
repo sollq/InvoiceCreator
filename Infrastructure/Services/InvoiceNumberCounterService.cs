@@ -11,8 +11,13 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
 
     private readonly object _lock = new();
 
-    public string SetNextNumber(DocumentType org)
+    public string SetNumber(DocumentType org, string inputInvoiceNumber)
     {
+        var tryParse = int.TryParse(inputInvoiceNumber, out var number);
+        if (!tryParse)
+        {
+            throw new ArgumentException("Некорректный номер счета");
+        }
         lock (_lock)
         {
             var data = Load();
@@ -20,19 +25,19 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
             switch (org)
             {
                 case DocumentType.InvoiceRu:
-                    data.Ru++;
+                    data.Ru = number;
                     next = data.Ru;
                     break;
                 case DocumentType.InvoiceKz:
-                    data.Kz++;
+                    data.Kz = number;
                     next = data.Kz;
                     break;
                 case DocumentType.KzAkt:
-                    data.KzAkt++;
+                    data.KzAkt = number;
                     next = data.KzAkt;
                     break;
                 case DocumentType.RuAkt:
-                    data.RuAkt++;
+                    data.RuAkt = number;
                     next = data.RuAkt;
                     break;
                 default:

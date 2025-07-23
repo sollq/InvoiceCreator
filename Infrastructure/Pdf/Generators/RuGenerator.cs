@@ -147,12 +147,20 @@ public class RuGenerator : IPdfGenerator
                             $"{char.ToUpper(data.TotalAmountText[0])}{data.TotalAmountText[1..]}").Bold();
 
                     // --- Подписи ---
-                    col.Item().PaddingTop(40).Row(row =>
+                    col.Item().PaddingTop(40).Table(table =>
                     {
-                        row.ConstantItem(90).AlignLeft().Text("Руководитель:").Bold();
-                        row.ConstantItem(150).AlignCenter().Image("Stamps/handwr.png");
-                        row.ConstantItem(90).AlignLeft().Text("Загороднюк К.Е.").Bold();
-                        row.ConstantItem(150).AlignCenter().Image("Stamps/ru.png");
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.ConstantColumn(90);   // "Руководитель:"
+                            columns.ConstantColumn(150);  // подпись
+                            columns.ConstantColumn(110);  // ФИО
+                            columns.ConstantColumn(150);  // печать
+                        });
+
+                        table.Cell().AlignLeft().AlignMiddle().Text("Руководитель:").Bold();
+                        table.Cell().AlignCenter().AlignMiddle().Image("Stamps/handwr.png");
+                        table.Cell().AlignLeft().AlignMiddle().Text("Загороднюк К.Е.").Bold();
+                        table.Cell().AlignCenter().AlignMiddle().Image("Stamps/ru.png");
                     });
                 });
             });
