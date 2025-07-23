@@ -19,11 +19,11 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
             int next;
             switch (org)
             {
-                case DocumentType.Ru:
+                case DocumentType.InvoiceRu:
                     data.Ru++;
                     next = data.Ru;
                     break;
-                case DocumentType.Kz:
+                case DocumentType.InvoiceKz:
                     data.Kz++;
                     next = data.Kz;
                     break;
@@ -49,8 +49,8 @@ public class InvoiceNumberCounterService(string? filePath = null) : IInvoiceNumb
         var data = Load();
         var next = org switch
         {
-            DocumentType.Ru => data.Ru + 1,
-            DocumentType.Kz => data.Kz + 1,
+            DocumentType.InvoiceRu => data.Ru + 1,
+            DocumentType.InvoiceKz => data.Kz + 1,
             DocumentType.KzAkt => data.KzAkt + 1,
             DocumentType.RuAkt => data.RuAkt + 1,
             _ => throw new ArgumentException("Unknown org type")

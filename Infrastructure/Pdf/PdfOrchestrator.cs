@@ -40,7 +40,7 @@ public class PdfOrchestrator(
         var generator = factory.GetGenerator(input.Type);
         var pdfBytes = generator.Generate(invoiceData);
 
-        var savePath = saveService.GetSavePath(invoiceNumber, config);
+        var savePath = saveService.GetSavePath(input.Type.ToString(), invoiceNumber, config);
         await saveService.SaveAsync(savePath, pdfBytes);
 
         counterService.SetNextNumber(input.Type);

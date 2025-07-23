@@ -4,6 +4,6 @@ namespace Infrastructure.Services.Interfaces;
 
 public interface ISaveService
 {
-    string GetSavePath(string invoiceNumber, IConfiguration config);
+    string GetSavePath(string name, string number, IConfiguration config);
     Task SaveAsync(string path, byte[] data);
 }

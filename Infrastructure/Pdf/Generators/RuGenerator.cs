@@ -12,7 +12,7 @@ public class RuGenerator : IPdfGenerator
 {
     public bool CanHandle(DocumentType type)
     {
-        return type is DocumentType.Ru;
+        return type is DocumentType.InvoiceRu;
     }
 
     public byte[] Generate(DocumentData data)
@@ -57,7 +57,7 @@ public class RuGenerator : IPdfGenerator
                                 AddRow("Корр. счёт банка", "30101810465250000801");
                                 AddRow("ИНН", "5420275654");
                                 AddRow("КПП", "542001001");
-                                AddRow("Назначение платежа", $"оплата услуг по договору № НС/{data.ContractNumber}/25");
+                                AddRow("Назначение платежа", $"Оплата услуг по договору № НС/{data.ContractNumber}/25");
 
                                 void AddRow(string left, string right)
                                 {
@@ -74,7 +74,7 @@ public class RuGenerator : IPdfGenerator
                                 .FontSize(8).AlignCenter();
                         });
                     });
-                    col.Item().Row(row =>
+                    col.Item().PaddingTop(10).Row(row =>
                     {
                         row.RelativeItem().Text($"Счёт на оплату № {data.InvoiceNumber} от «{data.Date:dd}» {RussianMonthGenitive[data.Date.Month]} {data.Date:yyyy} г.")
                             .FontSize(14).Bold().AlignCenter();
@@ -149,10 +149,10 @@ public class RuGenerator : IPdfGenerator
                     // --- Подписи ---
                     col.Item().PaddingTop(40).Row(row =>
                     {
-                        row.RelativeItem().Text($"Руководитель:").Bold();
+                        row.ConstantItem(90).AlignLeft().Text("Руководитель:").Bold();
                         row.ConstantItem(150).AlignCenter().Image("Stamps/handwr.png");
-                        row.RelativeItem().Text("Загороднюк К.Е.").Bold();
-                        row.ConstantItem(130).AlignCenter().Image("Stamps/Ru.png");
+                        row.ConstantItem(90).AlignLeft().Text("Загороднюк К.Е.").Bold();
+                        row.ConstantItem(150).AlignCenter().Image("Stamps/ru.png");
                     });
                 });
             });

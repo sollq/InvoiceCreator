@@ -51,6 +51,6 @@ public class KzStrategy : IPartyInfoStrategy
 
     public bool CanHandle(DocumentType type)
     {
-        return type is DocumentType.Kz or DocumentType.KzAkt;
+        return type is DocumentType.InvoiceKz or DocumentType.KzAkt;
     }
 }

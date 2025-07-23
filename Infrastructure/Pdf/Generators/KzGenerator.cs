@@ -12,7 +12,7 @@ public class KzGenerator : IPdfGenerator
 {
     public bool CanHandle(DocumentType type)
     {
-        return type is DocumentType.Kz;
+        return type is DocumentType.InvoiceKz;
     }
 
     public byte[] Generate(DocumentData data)

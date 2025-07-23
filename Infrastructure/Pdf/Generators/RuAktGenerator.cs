@@ -114,7 +114,7 @@ public class RuAktGenerator : IPdfGenerator
                     col.Item().PaddingTop(40).Row(row =>
                     {
                         row.RelativeItem().Text($"Исполнитель:                                                               // {data.Seller.Name}").Bold();
-                        row.ConstantItem(130).AlignCenter().Image("Stamps/Ru.png");
+                        row.ConstantItem(130).AlignCenter().Image("Stamps/ru.png");
                     });
                     col.Item().PaddingTop(10).Row(row =>
                     {

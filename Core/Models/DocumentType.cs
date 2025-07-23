@@ -2,8 +2,8 @@
 
 public enum DocumentType
 {
-    Ru,
-    Kz,
+    InvoiceRu,
+    InvoiceKz,
     RuAkt,
     KzAkt
 }

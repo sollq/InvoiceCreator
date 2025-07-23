@@ -5,11 +5,11 @@ namespace Infrastructure.Services;
 
 public class SaveService : ISaveService
 {
-    public string GetSavePath(string invoiceNumber, IConfiguration config)
+    public string GetSavePath(string name, string number, IConfiguration config)
     {
         // Пример: путь из appsettings.json или стандартная папка
         var folder = config["InvoiceSaveFolder"] ?? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        var fileName = $"Invoice_{invoiceNumber}.pdf";
+        var fileName = $"{name}_{number}.pdf";
         return Path.Combine(folder, fileName);
     }
 

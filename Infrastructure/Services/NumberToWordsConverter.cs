@@ -10,7 +10,7 @@ public class NumberToWordsConverter : INumberToWordsConverter
 {
     public string Convert(decimal value, DocumentType inputType)
     {
-        if (inputType is DocumentType.Kz or DocumentType.KzAkt)
+        if (inputType is DocumentType.InvoiceKz or DocumentType.KzAkt)
         {
             return ConvertKz(value);
         }

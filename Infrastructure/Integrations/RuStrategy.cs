@@ -10,7 +10,7 @@ public class RuStrategy : IPartyInfoStrategy
 {
     public bool CanHandle(DocumentType type)
     {
-        return type is DocumentType.Ru or DocumentType.RuAkt;
+        return type is DocumentType.InvoiceRu or DocumentType.RuAkt;
     }
 
     public async Task<ClientInfo> GetData(string id)

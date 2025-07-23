@@ -10,7 +10,7 @@ public class MyCompanyInfoProvider : IMyCompanyInfoProvider
     {
         return type switch
         {
-            DocumentType.Kz => new SupplierInfo
+            DocumentType.InvoiceKz => new SupplierInfo
             {
                 Name = "TOO \"Евраз-стандарт\"",
                 INN = "250140017474",
@@ -34,7 +34,7 @@ public class MyCompanyInfoProvider : IMyCompanyInfoProvider
                 Kbe = "17",
                 PaymentCode = "890"
             },
-            DocumentType.Ru => new SupplierInfo
+            DocumentType.InvoiceRu => new SupplierInfo
             {
                 Name = "ООО \"НОРДСИС\"",
                 KPP = "540201001",

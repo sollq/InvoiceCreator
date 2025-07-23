@@ -21,7 +21,7 @@ public class InvoiceInputViewModels : BaseViewModel
     private string? _invoiceNumber;
     private bool _isBusy;
 
-    private DocumentType _selectedOrgType = DocumentType.Ru;
+    private DocumentType _selectedOrgType = DocumentType.InvoiceRu;
 
     public InvoiceInputViewModels(
         ILogger<InvoiceInputViewModels> logger,
