@@ -67,12 +67,12 @@ public class RuGenerator : IPdfGenerator
                             });
                         });
                         // QR-код
-                        row.RelativeItem().AlignRight().AlignBottom().Column(c =>
-                        {
-                            c.Item().Image("Stamps/qrcode.jpg").FitWidth();
-                            c.Item().Text("Отсканируйте\nв приложении банка\nдля оплаты")
-                                .FontSize(8).AlignCenter();
-                        });
+                        //row.RelativeItem().AlignRight().AlignBottom().Column(c =>
+                        //{
+                        //    c.Item().Image("Stamps/qrcode.jpg").FitWidth();
+                        //    c.Item().Text("Отсканируйте\nв приложении банка\nдля оплаты")
+                        //        .FontSize(8).AlignCenter();
+                        //});
                     });
                     col.Item().PaddingTop(10).Row(row =>
                     {

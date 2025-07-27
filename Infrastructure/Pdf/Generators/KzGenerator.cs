@@ -185,10 +185,25 @@ public class KzGenerator : IPdfGenerator
                     col.Item().Text($"Всего к оплате: {data.TotalAmountText}").Bold();
 
                     col.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Black);
-                    col.Item().Row(row =>
+                    //col.Item().Row(row =>
+                    //{
+                    //    row.RelativeItem().Text("Исполнитель: _______________________________________//").Bold();
+                    //    row.ConstantItem(80).Image("Stamps/kz.png");
+                    //});
+                    col.Item().PaddingTop(40).Table(table =>
                     {
-                        row.RelativeItem().Text("Исполнитель: _______________________________________//").Bold();
-                        row.ConstantItem(80).Image("Stamps/kz.png");
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.ConstantColumn(90);   // "Руководитель:"
+                            columns.ConstantColumn(150);  // подпись
+                            columns.ConstantColumn(110);  // ФИО
+                            columns.ConstantColumn(100);  // печать
+                        });
+
+                        table.Cell().AlignLeft().AlignMiddle().Text("Исполнитель:").Bold();
+                        table.Cell().AlignCenter().AlignMiddle().Image("Stamps/kz_handwr.png");
+                        table.Cell().AlignLeft().AlignMiddle().Text($"{data.Seller.Name}").Bold();
+                        table.Cell().AlignCenter().AlignMiddle().Image("Stamps/kz.png");
                     });
                 });
             });

@@ -69,7 +69,7 @@ public class KzAktGenerator : IPdfGenerator
                             columns.ConstantColumn(45);
                             columns.ConstantColumn(60);
                             //columns.ConstantColumn(50);
-                            columns.ConstantColumn(50);
+                            columns.ConstantColumn(80);
                         });
 
                         table.Header(header =>
@@ -90,9 +90,9 @@ public class KzAktGenerator : IPdfGenerator
                             table.Cell().Element(CellStyle).Text(p.Name);
                             table.Cell().Element(CellStyle).Text(p.Quantity.ToString()).AlignCenter();
                             table.Cell().Element(CellStyle).Text(p.Unit ?? "").AlignCenter();
-                            table.Cell().Element(CellStyle).Text($"{p.Price:### ### ##0.00} руб.").AlignRight();
+                            table.Cell().Element(CellStyle).Text($"{p.Price:### ### ##0.00}").AlignCenter();
                             //table.Cell().Element(CellStyle).Text("Без НДС").Bold().AlignCenter();
-                            table.Cell().Element(CellStyle).Text($"{p.Total:### ### ##0.00} руб.").AlignRight();
+                            table.Cell().Element(CellStyle).Text($"{p.Total:### ### ##0.00}").AlignCenter();
                         }
 
                         // Footer итоги
@@ -111,15 +111,41 @@ public class KzAktGenerator : IPdfGenerator
                         "Все обязательства выполнены исполнителем полностью и в срок, приняты заказчиком в полном объёме и без замечаний. Заказчик претензий к исполнителю не имеет.");
 
                     // --- Подписи ---
-                    col.Item().PaddingTop(40).Row(row =>
+                    col.Item().PaddingTop(40).Table(table =>
                     {
-                        row.RelativeItem().Text($"Исполнитель:                                                               // {data.Seller.Name}").Bold();
-                        row.ConstantItem(130).AlignCenter().Image("Stamps/kz.png");
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.ConstantColumn(90);   // "Руководитель:"
+                            columns.ConstantColumn(150);  // подпись
+                            columns.ConstantColumn(110);  // ФИО
+                            columns.ConstantColumn(100);  // печать
+                        });
+
+                        table.Cell().AlignLeft().AlignMiddle().Text("Исполнитель").Bold();
+                        table.Cell().AlignCenter().AlignMiddle().Image("Stamps/kz_handwr.png");
+                        table.Cell().AlignLeft().AlignMiddle().Text($"{data.Seller.Name}").Bold();
+                        table.Cell().AlignCenter().AlignMiddle().Image("Stamps/kz.png");
                     });
-                    col.Item().PaddingTop(10).Row(row =>
+                    col.Item().PaddingTop(40).Table(table =>
                     {
-                        row.RelativeItem().Text($"Заказчик:                                                                  //").Bold();
-                        row.RelativeItem().AlignCenter().Text($"{data.Buyer.Name}").Bold();
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.ConstantColumn(90);   // "Заказчик"
+                            columns.ConstantColumn(150);  // подпись
+                            columns.ConstantColumn(110);  // ФИО
+                            columns.ConstantColumn(110);  // печать
+                        });
+
+                        table.Cell().Row(1).Column(1).AlignLeft().AlignMiddle().Text("Заказчик").Bold();
+
+                        table.Cell().Element(container => container
+                            .MinHeight(10)
+                            .PaddingTop(5)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Black));
+
+                        table.Cell().Row(1).Column(3).AlignLeft().AlignMiddle().Text($"{data.Buyer.Name}").Bold();
+                        table.Cell().Row(1).Column(4).AlignCenter().AlignMiddle().Text(""); // если будет печать — сюда вставишь
                     });
                 });
             });
