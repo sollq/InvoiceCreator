@@ -55,7 +55,7 @@ public class KzAktGenerator : IPdfGenerator
                     col.Item().Text(t =>
                     {
                         t.Span("Основание: ").Bold();
-                        t.Span($"Оплата услуг по договору \u2116 {data.ContractNumber} от {data.Date:dd MMMM yyyy} г.");
+                        t.Span($"Оплата услуг по договору \u2116 {data.ContractNumber} от {data.Date:dd.MM.yyyy} г.");
                     });
 
                     // --- Таблица работ ---

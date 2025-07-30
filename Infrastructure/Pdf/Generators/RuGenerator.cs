@@ -57,7 +57,7 @@ public class RuGenerator : IPdfGenerator
                                 AddRow("Корр. счёт банка", "30101810465250000801");
                                 AddRow("ИНН", "5420275654");
                                 AddRow("КПП", "542001001");
-                                AddRow("Назначение платежа", $"Оплата услуг по договору № {data.ContractNumber} от {data.Date}");
+                                AddRow("Назначение платежа", $"Оплата услуг по договору № {data.ContractNumber} от {data.Date:dd.MM.yyyy}");
 
                                 void AddRow(string left, string right)
                                 {
