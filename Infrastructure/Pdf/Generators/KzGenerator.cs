@@ -114,7 +114,7 @@ public class KzGenerator : IPdfGenerator
                     col.Item().Text(t =>
                     {
                         t.Span("Договор: ");
-                        t.Span($"ЕС/{data.ContractNumber}/{data.Date:yyyy} от {data.Date:dd.MM.yyyy}").Bold();
+                        t.Span($"{data.ContractNumber} от {data.Date:dd.MM.yyyy}").Bold();
                     });
 
                     // --- Таблица товаров/услуг ---
