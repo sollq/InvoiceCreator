@@ -36,7 +36,7 @@ public class RuGenerator : IPdfGenerator
                         // Логотип + заголовок таблицы
                         row.RelativeItem(3).Column(col1 =>
                         {
-                            col1.Item().Text("BLANC").FontSize(18).Bold();
+                            col1.Item().Text("А").FontSize(45).FontColor(Colors.Red.Medium).Bold();
 
                             col1.Item().PaddingTop(5).Text("Образец заполнения платёжного поручения")
                                 .FontSize(10).Bold().AlignCenter();
@@ -51,13 +51,14 @@ public class RuGenerator : IPdfGenerator
                                 });
 
                                 AddRow("Получатель", "ООО \"НОРДСИС\"");
-                                AddRow("Счёт получателя", "40702810300100216376");
-                                AddRow("Банк получателя", "ООО \"Бланк банк\"");
-                                AddRow("БИК банка", "044525801");
-                                AddRow("Корр. счёт банка", "30101810465250000801");
+                                AddRow("Получателя Сч.\u2116", "40702810823670000756");
+                                AddRow("Банк получателя", "ФИЛИАЛ \"НОВОСИБИРСКИЙ\" АО \"АЛЬФА-БАНК\"");
+                                AddRow("БИК банка", "045004774");
+                                AddRow("Корр. счёт банка", "30101810600000000774");
                                 AddRow("ИНН", "5420275654");
                                 AddRow("КПП", "542001001");
-                                AddRow("Назначение платежа", $"Оплата услуг по договору № {data.ContractNumber} от {data.Date:dd.MM.yyyy}");
+                                AddRow("Назначение платежа", $"Оплата услуг по договору № {data.ContractNumber}");
+                                return;
 
                                 void AddRow(string left, string right)
                                 {
@@ -89,7 +90,12 @@ public class RuGenerator : IPdfGenerator
                     col.Item().Text(t =>
                     {
                         t.Span("Покупатель: ").Bold();
-                        t.Span($"{data.Buyer.Name}, ИНН: {data.Buyer.INN}, КПП: {data.Buyer.KPP}");
+                        var innKppStr = $"{data.Buyer.Name}, ИНН: {data.Buyer.INN}";
+                        if (string.IsNullOrEmpty(data.Buyer.KPP))
+                        {
+                            innKppStr += $", КПП: {data.Buyer.KPP}";
+                        }
+                        t.Span(innKppStr);
                     });
 
                     var i = 1;

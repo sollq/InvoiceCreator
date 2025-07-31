@@ -32,7 +32,7 @@ public class RuAktGenerator : IPdfGenerator
                     // --- Логотип и заголовок ---
                     col.Item().Row(row =>
                     {
-                        row.RelativeItem().Text("BLANC").Bold().FontSize(14);
+                        row.RelativeItem().Text("А").FontSize(45).FontColor(Colors.Red.Medium).Bold();
                     });
                     col.Item().Row(row =>
                     {
@@ -55,7 +55,7 @@ public class RuAktGenerator : IPdfGenerator
                     col.Item().Text(t =>
                     {
                         t.Span("Основание: ").Bold();
-                        t.Span($"Оплата услуг по договору \u2116 {data.ContractNumber} от {data.Date:dd MM yyyy} г.");
+                        t.Span($"Оплата услуг по договору \u2116 {data.ContractNumber}");
                     });
 
                     // --- Таблица работ ---

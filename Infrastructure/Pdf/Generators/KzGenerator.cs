@@ -114,17 +114,16 @@ public class KzGenerator : IPdfGenerator
                     col.Item().Text(t =>
                     {
                         t.Span("Договор: ");
-                        t.Span($"{data.ContractNumber} от {data.Date:dd.MM.yyyy}").Bold();
+                        t.Span($"№ {data.ContractNumber}").Bold();
                     });
 
-                    // --- Таблица товаров/услуг ---
+                    // товары
                     col.Item().PaddingTop(10).Table(table =>
                     {
                         table.ColumnsDefinition(columns =>
                         {
                             columns.ConstantColumn(30); // №
-                            columns.ConstantColumn(60); // Код
-                            columns.RelativeColumn(2); // Наименование
+                            columns.RelativeColumn(2);  // Наименование
                             columns.ConstantColumn(40); // Кол-во
                             columns.ConstantColumn(60); // Ед.
                             columns.ConstantColumn(70); // Цена
@@ -135,7 +134,6 @@ public class KzGenerator : IPdfGenerator
                         table.Header(header =>
                         {
                             header.Cell().Element(CellStyle).Text("№").Bold().AlignCenter();
-                            header.Cell().Element(CellStyle).Text("Код").Bold().AlignCenter();
                             header.Cell().Element(CellStyle).Text("Наименование").Bold().AlignCenter();
                             header.Cell().Element(CellStyle).Text("Кол-во").Bold().AlignCenter();
                             header.Cell().Element(CellStyle).Text("Ед.").Bold().AlignCenter();
@@ -148,16 +146,14 @@ public class KzGenerator : IPdfGenerator
                         foreach (var p in data.Products)
                         {
                             table.Cell().Element(CellStyle).Text(i++.ToString()).AlignCenter();
-                            table.Cell().Element(CellStyle).Text(p.Code ?? "").AlignCenter();
                             table.Cell().Element(CellStyle).Text(p.Name).AlignCenter();
                             table.Cell().Element(CellStyle).Text(p.Quantity.ToString()).AlignCenter();
                             table.Cell().Element(CellStyle).Text(p.Unit ?? "").AlignCenter();
                             table.Cell().Element(CellStyle).Text($"{p.Price:0.00}").AlignCenter();
                             table.Cell().Element(CellStyle).Text($"{p.Total:0.00}").AlignCenter();
                         }
-
-                        // Итог
                     });
+
 
                     // --- Итоги и пропись ---
                     col.Item().PaddingTop(10).AlignRight().Table(table =>
@@ -176,6 +172,8 @@ public class KzGenerator : IPdfGenerator
 
                         table.Cell().Row(2).Column(2).Element(NoBorderCellStyle).AlignLeft().Text("В том числе НДС:")
                             .Bold();
+                        table.Cell().Row(2).Column(2).Element(NoBorderCellStyle).AlignRight()
+                            .Text("0").Bold();
                     });
 
                     col.Item().PaddingTop(10)
