@@ -91,7 +91,7 @@ public class RuGenerator : IPdfGenerator
                     {
                         t.Span("Покупатель: ").Bold();
                         var innKppStr = $"{data.Buyer.Name}, ИНН: {data.Buyer.INN}";
-                        if (string.IsNullOrEmpty(data.Buyer.KPP))
+                        if (!string.IsNullOrEmpty(data.Buyer.KPP))
                         {
                             innKppStr += $", КПП: {data.Buyer.KPP}";
                         }
