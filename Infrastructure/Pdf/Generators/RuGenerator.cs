@@ -50,13 +50,13 @@ public class RuGenerator : IPdfGenerator
                                     columns.RelativeColumn();
                                 });
 
-                                AddRow("Получатель", "ООО \"НОРДСИС\"");
-                                AddRow("Получателя Сч.\u2116", "40702810823670000756");
-                                AddRow("Банк получателя", "ФИЛИАЛ \"НОВОСИБИРСКИЙ\" АО \"АЛЬФА-БАНК\"");
-                                AddRow("БИК банка", "045004774");
-                                AddRow("Корр. счёт банка", "30101810600000000774");
-                                AddRow("ИНН", "5420275654");
-                                AddRow("КПП", "542001001");
+                                AddRow("Получатель", $"{data.Seller.Name}");
+                                AddRow("Получателя Сч.\u2116", $"{data.Seller.CoreAcc}");
+                                AddRow("Банк получателя", $"{data.Seller.BankDetails}");
+                                AddRow("БИК банка", $"{data.Seller.BIK}");
+                                AddRow("Корр. счёт банка", $"{data.Seller.CoreAcc}");
+                                AddRow("ИНН",  $"{data.Seller.INN}");
+                                AddRow("КПП", $"{data.Seller.KPP}");
                                 AddRow("Назначение платежа", $"Оплата услуг по договору № {data.ContractNumber}");
                                 return;
 

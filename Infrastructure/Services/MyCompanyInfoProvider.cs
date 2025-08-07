@@ -17,7 +17,7 @@ public class MyCompanyInfoProvider : IMyCompanyInfoProvider
                 Address =
                     "Республика Казахстан, Восточно-Казахстанская область, город Усть-Каменогорск, Проспект Абая, здание 181",
                 BankDetails = "АО \"Банк ЦентрКредит\"",
-                BankAccount = "KZ6785622031435537314",
+                BankAccount = "KZ678562203143557314",
                 BIK = "KCJBKZKX",
                 Kbe = "17",
                 PaymentCode = "890"
@@ -29,7 +29,7 @@ public class MyCompanyInfoProvider : IMyCompanyInfoProvider
                 Address =
                     "Республика Казахстан, Восточно-Казахстанская область, город Усть-Каменогорск, Проспект Абая, здание 181",
                 BankDetails = "АО \"Банк ЦентрКредит\"",
-                BankAccount = "KZ6785622031435537314",
+                BankAccount = "KZ678562203143557314",
                 BIK = "KCJBKZKX",
                 Kbe = "17",
                 PaymentCode = "890"
@@ -41,8 +41,11 @@ public class MyCompanyInfoProvider : IMyCompanyInfoProvider
                 OGRN = "1225400047267",
                 INN = "5402075654",
                 Address = "Россия, г. Новосибирск, Красный пр-кт, д. 153Г, помещ 6",
-                BankDetails = "ПАО Сбербанк",
-                BankAccount = "40702810900000000001"
+                BankDetails = "ФИЛИАЛ \"НОВОСИБИРСКИЙ\" АО \"АЛЬФА-БАНК\"",
+                BankAccount = "40702810900000000001",
+                BankCoreAcc = "30101810600000000774",
+                CoreAcc = "40702810823670000756",
+                BIK = "045004774"
             },
             DocumentType.RuAkt => new SupplierInfo
             {
@@ -51,8 +54,11 @@ public class MyCompanyInfoProvider : IMyCompanyInfoProvider
                 OGRN = "1225400047267",
                 INN = "5402075654",
                 Address = "Россия, г. Новосибирск, Красный пр-кт, д. 153Г, помещ 6",
-                BankDetails = "ПАО Сбербанк",
-                BankAccount = "40702810900000000001"
+                BankDetails = "ФИЛИАЛ \"НОВОСИБИРСКИЙ\" АО \"АЛЬФА-БАНК\"",
+                BankAccount = "40702810900000000001",
+                BankCoreAcc = "30101810600000000774",
+                CoreAcc = "40702810823670000756",
+                BIK = "045004774"
             },
             _ => throw new NotImplementedException()
         };
